@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import { SessionProvider } from "next-auth/react";
+import { Next13ProgressBar } from "next13-progressbar";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -18,7 +19,15 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   return (
     <NextUIProvider navigate={router.push}>
       <SessionProvider>
-        <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+        <NextThemesProvider {...themeProps}>
+          {children}
+          <Next13ProgressBar
+            height="4px"
+            color="#0A2FFF"
+            options={{ showSpinner: false }}
+            showOnShallow
+          />
+        </NextThemesProvider>
       </SessionProvider>
     </NextUIProvider>
   );

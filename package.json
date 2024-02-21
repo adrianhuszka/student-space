@@ -35,6 +35,7 @@
     "next-auth": "^4.24.4",
     "next-intl": "latest",
     "next-themes": "^0.2.1",
+    "next13-progressbar": "^1.2.0",
     "react": "^18",
     "react-dom": "^18"
   },
