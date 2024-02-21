@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Home",
+    "forum": "Forum",
+    "about": "About",
+    "login": "Login",
+    "logout": "Logout",
+    "profile": "Profile",
+    "admin": "Admin",
+    "users": "Users",
+    "settings": "Settings",
+    "search": "Search..."
+  },
+  "login-page": {
+    "title": "Login",
+    "username": "Username",
+    "username-error-empty": "Please enter your username!",
+    "password": "Password",
+    "password-error-empty": "Please enter your password!",
+    "remember-me": "Remember me",
+    "submit-btn": "Login",
+    "CredentialsSignin": "Invalid username or password!",
+    "submit-server-error": "Something went wrong, please try again later!"
+  },
+  "locale-switch": {
+    "label": "Change language:",
+    "locale": "{locale, select, hu {Hungarian} en {English} other {Unknown}}"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "home": "Főoldal",
+    "forum": "Fórum",
+    "about": "Rólunk",
+    "login": "Bejelentkezés",
+    "logout": "Kijelentkezés",
+    "profile": "Profil",
+    "admin": "Adminisztráció",
+    "users": "Felhasználók",
+    "settings": "Beállítások",
+    "search": "Keresés..."
+  },
+  "login-page": {
+    "title": "Bejelentkezés",
+    "username": "Felhasználónév",
+    "username-error-empty": "Kérjük, adja meg a felhasználónevet!",
+    "password": "Jelszó",
+    "password-error-empty": "Kérjük, adja meg a jelszót!",
+    "remember-me": "Emlékezz rám",
+    "submit-btn": "Bejelentkezés",
+    "submit-success": "Sikeres bejelentkezés!",
+    "CredentialsSignin": "Hibás felhasználónév vagy jelszó!",
+    "submit-server-error": "Valami hiba történt! Kérjük, próbálja újra később!"
+  },
+  "locale-switch": {
+    "label": "Nyelv választás",
+    "locale": "{locale, select, hu {Magyar} en {Angol} other {Ismeretlen}}"
+  }
+}
