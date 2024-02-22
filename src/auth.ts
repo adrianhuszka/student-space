@@ -1,10 +1,18 @@
 import { jwtDecode } from "jwt-decode";
-import { AuthOptions, User } from "next-auth";
+import { Account, AuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { encrypt } from "./utils/encription";
 import { JWT } from "next-auth/jwt";
 
 interface CustomJWT extends JWT {
+  [key: string]: any;
+}
+
+interface CustomSession extends Session {
+  [key: string]: any;
+}
+
+interface CustomUser extends User {
   [key: string]: any;
 }
 
@@ -84,7 +92,13 @@ const auth: AuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account }: { user: any; account: any }) {
+    async signIn({
+      user,
+      account,
+    }: {
+      user: CustomUser;
+      account: Account | null;
+    }) {
       account!.user_id = user.id;
       account!.access_token = user.access_token;
       account!.id_token = user.id_token;
@@ -117,7 +131,13 @@ const auth: AuthOptions = {
         }
       }
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({
+      session,
+      token,
+    }: {
+      session: CustomSession;
+      token: CustomJWT;
+    }) {
       session.access_token = encrypt(token.access_token);
       session.id_token = encrypt(token.id_token);
       session.roles = token.decoded?.realm_access?.roles;
