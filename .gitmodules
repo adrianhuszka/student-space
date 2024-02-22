@@ -1,0 +1,3 @@
+[submodule "student-space-backend"]
+	path = student-space-backend
+	url = https://github.com/adrianhuszka/student-space-backend
