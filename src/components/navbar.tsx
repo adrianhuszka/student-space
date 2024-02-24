@@ -9,7 +9,7 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
-import { Avatar } from "@nextui-org/avatar";
+import { User } from "@nextui-org/user";
 import { Kbd } from "@nextui-org/kbd";
 import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
@@ -26,16 +26,27 @@ import { GithubIcon, SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
 import LocaleSwitcher from "./locale-switch";
 import { useTranslations } from "next-intl";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  DropdownSection,
 } from "@nextui-org/dropdown";
+import { useEffect, useState } from "react";
+import { CustomSession } from "@/types";
 
 export const Navbar = () => {
   const translate = useTranslations("nav");
+  const session = useSession();
+  const [sessionData, setSessionData] = useState<CustomSession>();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      setSessionData(session.data);
+    }
+  }, [session]);
 
   async function onLogoutClick() {
     try {
@@ -98,41 +109,96 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <Link isExternal href={siteConfig.links.github} aria-label="Github">
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-          <LocaleSwitcher />
-        </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden lg:flex">
-          <Dropdown>
+        <Dropdown>
+          <NavbarItem className="flex">
             <DropdownTrigger>
-              <Avatar
-                isBordered
-                radius="md"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              <User
+                as="button"
+                avatarProps={{
+                  isBordered: true,
+                  src: sessionData?.user?.image,
+                  showFallback: true,
+                  name: undefined,
+                }}
+                className="transition-transform"
+                description={"@" + sessionData?.user?.name}
+                name={sessionData?.user?.fullName}
               />
             </DropdownTrigger>
-            <DropdownMenu aria-label="Dynamic Actions">
-              <DropdownItem>{translate("profile")}</DropdownItem>
-              <DropdownItem
-                onClick={() => {
-                  onLogoutClick().then(() => signOut());
-                }}
-              >
-                {translate("logout")}
+          </NavbarItem>
+          <DropdownMenu
+            aria-label="Dynamic Actions"
+            disabledKeys={["profile-desc"]}
+            closeOnSelect={false}
+          >
+            <DropdownItem key="profile-desc" showDivider className="h-14 gap-2">
+              <p className="font-semibold">{translate("signed-in-as")}</p>
+              <p className="font-semibold">
+                {sessionData?.user?.fullName} ({sessionData?.user?.name})
+              </p>
+            </DropdownItem>
+            <DropdownSection title={translate("preferences")} showDivider>
+              <DropdownItem>
+                <ThemeSwitch showText />
               </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </NavbarItem>
+              <DropdownItem>
+                <LocaleSwitcher />
+              </DropdownItem>
+            </DropdownSection>
+            <DropdownSection title={translate("profile")} showDivider>
+              <DropdownItem>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  )}
+                  color="foreground"
+                  href="/profile"
+                >
+                  {translate("profile")}
+                </NextLink>
+              </DropdownItem>
+              <DropdownItem>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  )}
+                  color="foreground"
+                  href="/settings"
+                >
+                  {translate("settings")}
+                </NextLink>
+              </DropdownItem>
+            </DropdownSection>
+            {sessionData?.roles?.includes("ADMIN") && (
+              <DropdownSection title={translate("administration")} showDivider>
+                <DropdownItem>
+                  <NextLink
+                    className={clsx(
+                      linkStyles({ color: "foreground" }),
+                      "data-[active=true]:text-primary data-[active=true]:font-medium"
+                    )}
+                    color="foreground"
+                    href="/admin/dashboard"
+                  >
+                    {translate("admin-panel")}
+                  </NextLink>
+                </DropdownItem>
+              </DropdownSection>
+            )}
+            <DropdownItem
+              className="text-red-500"
+              onClick={() => {
+                onLogoutClick().then(() => signOut());
+              }}
+            >
+              {translate("logout")}
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </NavbarContent>
-
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={siteConfig.links.github} aria-label="Github">
-          <GithubIcon className="text-default-500" />
-        </Link>
         <ThemeSwitch />
         <LocaleSwitcher />
         <NavbarMenuToggle />
@@ -143,18 +209,8 @@ export const Navbar = () => {
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
+              <Link color={"foreground"} href="#" size="lg">
+                {translate(item.label)}
               </Link>
             </NavbarMenuItem>
           ))}

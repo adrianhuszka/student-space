@@ -2,24 +2,28 @@
 
 import { FC } from "react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { SwitchProps, useSwitch } from "@nextui-org/switch";
+import { Switch, SwitchProps, useSwitch } from "@nextui-org/switch";
 import { useTheme } from "next-themes";
 import { useIsSSR } from "@react-aria/ssr";
 import clsx from "clsx";
 
-import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
+import { SunIcon, MoonIcon } from "@/components/icons";
+import { useTranslations } from "next-intl";
 
 export interface ThemeSwitchProps {
   className?: string;
   classNames?: SwitchProps["classNames"];
+  showText?: boolean;
 }
 
 export const ThemeSwitch: FC<ThemeSwitchProps> = ({
   className,
   classNames,
+  showText = false,
 }) => {
   const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
+  const translate = useTranslations("theme");
 
   const onChange = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
@@ -72,11 +76,21 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
           ),
         })}
       >
-        {!isSelected || isSSR ? (
-          <SunFilledIcon size={22} />
+        {/* {!isSelected || isSSR ? (
+          <SunFilledIcon size={20} />
         ) : (
-          <MoonFilledIcon size={22} />
-        )}
+          <MoonFilledIcon size={20} />
+        )} */}
+        <Switch
+          defaultSelected={isSelected || isSSR}
+          onChange={onChange}
+          size="lg"
+          color="success"
+          startContent={<SunIcon />}
+          endContent={<MoonIcon />}
+        >
+          {showText && isSelected ? translate("light") : translate("dark")}
+        </Switch>
       </div>
     </Component>
   );

@@ -1,6 +1,16 @@
-export type SiteConfig = typeof siteConfig;
+export type navItem = {
+  label: string;
+  href: string;
+};
 
-export const siteConfig = {
+export type SiteConfig = {
+  name: string;
+  description: string;
+  navItems: navItem[];
+  navMenuItems: navItem[];
+};
+
+export const siteConfig: SiteConfig = {
   name: "StudentSpace",
   description: "site-description",
   navItems: [
@@ -23,7 +33,4 @@ export const siteConfig = {
       href: "/forum",
     },
   ],
-  links: {
-    github: "https://github.com/nextui-org/nextui",
-  },
 };

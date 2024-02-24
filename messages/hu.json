@@ -2,14 +2,20 @@
   "nav": {
     "home": "Főoldal",
     "forum": "Fórum",
-    "about": "Rólunk",
     "login": "Bejelentkezés",
     "logout": "Kijelentkezés",
     "profile": "Profil",
-    "admin": "Adminisztráció",
     "users": "Felhasználók",
     "settings": "Beállítások",
-    "search": "Keresés..."
+    "search": "Keresés...",
+    "preferences": "Preferenciák",
+    "administration": "Adminisztráció",
+    "admin-panel": "Admin felület",
+    "signed-in-as": "Bejelentkezve mint"
+  },
+  "theme": {
+    "light": "Világos mód",
+    "dark": "Sötét mód"
   },
   "login-page": {
     "title": "Bejelentkezés",
@@ -26,5 +32,8 @@
   "locale-switch": {
     "label": "Nyelv választás",
     "locale": "{locale, select, hu {Magyar} en {Angol} other {Ismeretlen}}"
+  },
+  "admin-dashboard": {
+    "title": "Adminisztrációs felület"
   }
 }

@@ -4,35 +4,28 @@ import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { useFormStatus } from "react-dom";
 import { Checkbox } from "@nextui-org/checkbox";
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
-export default function LoginForm() {
+export default function LoginForm({ username }: { username: string }) {
   const { pending } = useFormStatus();
-  const [error, setError] = useState<string>();
-  const router = useRouter();
-  const locale = useLocale();
   const translate = useTranslations("login-page");
+  const searchParams = useSearchParams();
+
+  const urlError = searchParams.get("error");
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (error) setError(undefined);
 
     const formData = new FormData(event.currentTarget);
+
     signIn("credentials", {
       username: formData.get("username"),
       password: formData.get("password"),
+      rememberMe: formData.get("remember-me") !== null,
       redirect: true,
-    }).then((result) => {
-      if (result?.error) {
-        if (result.error === "CredentialsSignin") {
-          setError(result.error);
-        } else {
-          setError("submit-server-error");
-        }
-      }
     });
   }
   return (
@@ -49,6 +42,7 @@ export default function LoginForm() {
           labelPlacement="inside"
           size="sm"
           label={translate("username")}
+          defaultValue={username}
           required
         />
         <Input
@@ -59,11 +53,11 @@ export default function LoginForm() {
           label={translate("password")}
           required
         />
-        <Checkbox defaultSelected size="sm">
+        <Checkbox name="remember-me" size="sm" defaultSelected={!!username}>
           {translate("remember-me")}
         </Checkbox>
-        <div className="text-red-900">
-          {error && <p>{translate(error.toString())}</p>}
+        <div className="text-red-700">
+          {urlError && urlError !== "" && <p>{translate(urlError)}</p>}
         </div>
         <Button aria-disabled={pending} type="submit">
           {translate("submit-btn")}

@@ -11,9 +11,7 @@ export default function LoginLayout({
       <header>
         <Navbar />
       </header>
-      <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow overflow-hidden">{children}</main>
       <footer className="w-full flex items-center justify-center py-3">
         <Link
           isExternal

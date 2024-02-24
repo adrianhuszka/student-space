@@ -1,20 +1,9 @@
 import { jwtDecode } from "jwt-decode";
-import { Account, AuthOptions, Session, User } from "next-auth";
+import { Account, AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { encrypt } from "./utils/encription";
-import { JWT } from "next-auth/jwt";
-
-interface CustomJWT extends JWT {
-  [key: string]: any;
-}
-
-interface CustomSession extends Session {
-  [key: string]: any;
-}
-
-interface CustomUser extends User {
-  [key: string]: any;
-}
+import { CustomJWT, CustomUser, CustomSession } from "./types";
+import { cookies } from "next/headers";
 
 async function refreshToken(token: CustomJWT) {
   const resp = await fetch(`${process.env.KEYCLOAK_TOKEN_URL}`, {
@@ -43,6 +32,21 @@ async function refreshToken(token: CustomJWT) {
   };
 }
 
+function rememberMeCookie(data: string, rememberMe: boolean) {
+  const cookieStore = cookies();
+
+  if (rememberMe) {
+    cookieStore.set("username", data, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "lax",
+      httpOnly: true,
+    });
+  } else {
+    cookieStore.delete("username");
+  }
+}
+
 const auth: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -51,6 +55,7 @@ const auth: AuthOptions = {
       credentials: {
         username: { type: "text" },
         password: { type: "password" },
+        rememberMe: { type: "boolean" },
       },
       async authorize(credentials) {
         try {
@@ -69,7 +74,13 @@ const auth: AuthOptions = {
             }),
           });
           const data = await res.json();
+          if (data.error) throw data;
           const decoded = jwtDecode(data.access_token);
+
+          rememberMeCookie(
+            credentials?.username as string,
+            credentials?.rememberMe === "true"
+          );
 
           return {
             id: decoded.sub as string,
@@ -79,7 +90,7 @@ const auth: AuthOptions = {
             refresh_token: data.refresh_token,
           };
         } catch (err) {
-          console.log("err", err);
+          console.error("err", err);
           return null;
         }
       },
@@ -90,6 +101,11 @@ const auth: AuthOptions = {
     //   issuer: process.env.KEYCLOAK_ISSUER,
     // }),
   ],
+
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
 
   callbacks: {
     async signIn({
@@ -142,10 +158,18 @@ const auth: AuthOptions = {
       session.id_token = encrypt(token.id_token);
       session.roles = token.decoded?.realm_access?.roles;
       session.error = token.error;
+      session.user = {
+        name: token.decoded?.preferred_username,
+        email: token.decoded?.email,
+        image: token.decoded?.profile_picture,
+        fullName: token.decoded?.given_name + " " + token.decoded?.family_name,
+      };
       return session;
     },
     redirect({ url, baseUrl }) {
       const callbackUrl = new URL(url).searchParams.get("callbackUrl");
+
+      if (callbackUrl === baseUrl) return baseUrl;
 
       return callbackUrl ? `${baseUrl}${callbackUrl}` : baseUrl;
     },

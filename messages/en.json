@@ -2,14 +2,20 @@
   "nav": {
     "home": "Home",
     "forum": "Forum",
-    "about": "About",
     "login": "Login",
     "logout": "Logout",
     "profile": "Profile",
-    "admin": "Admin",
     "users": "Users",
     "settings": "Settings",
-    "search": "Search..."
+    "search": "Search...",
+    "preferences": "Preferences",
+    "administration": "Administration",
+    "admin-panel": "Admin panel",
+    "signed-in-as": "Signed in as"
+  },
+  "theme": {
+    "light": "Light mode",
+    "dark": "Dark mode"
   },
   "login-page": {
     "title": "Login",
@@ -25,5 +31,8 @@
   "locale-switch": {
     "label": "Change language:",
     "locale": "{locale, select, hu {Hungarian} en {English} other {Unknown}}"
+  },
+  "admin-dashboard": {
+    "title": "Admin panel"
   }
 }

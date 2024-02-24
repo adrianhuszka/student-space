@@ -3,8 +3,11 @@ import { withAuth } from "next-auth/middleware";
 import createIntlMiddleware from "next-intl/middleware";
 import { locales, localePrefix, defaultLocale } from "@/config/i18n";
 import { getToken } from "next-auth/jwt";
+import { CustomJWT } from "./types";
 
 const publicPages = ["/login"];
+
+const requireAdminPages = ["/admin"];
 
 const intlMiddleware = createIntlMiddleware({
   locales,
@@ -38,6 +41,14 @@ export default async function middleware(req: NextRequest) {
   const isAuthenticated = !!token;
 
   const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
+
+  if (
+    requireAdminPages.some((p) => req.nextUrl.pathname.startsWith(p)) &&
+    (!isAuthenticated ||
+      !(token as CustomJWT)?.decoded?.realm_access.roles.includes("ADMIN"))
+  ) {
+    return NextResponse.redirect(new URL("/forbidden", req.nextUrl));
+  }
 
   if (req.nextUrl.pathname.endsWith("/login") && isAuthenticated) {
     return NextResponse.redirect(new URL("/", req.url));

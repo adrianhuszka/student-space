@@ -1,5 +1,21 @@
+import { DefaultSession, Session, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import { SVGProps } from "react";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
+};
+
+export type CustomJWT = JWT & {
+  [key: string]: any;
+};
+
+type ad = Omit<Session, "user">;
+
+export type CustomSession = Omit<Session, "user"> & {
+  [key: string]: any;
+};
+
+export type CustomUser = User & {
+  [key: string]: any;
 };
