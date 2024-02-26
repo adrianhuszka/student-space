@@ -1,72 +1,108 @@
-import { Navbar, NavbarContent } from "@nextui-org/navbar";
+"use client";
 
-import React from "react";
-import { FeedbackIcon } from "../icons/navbar/feedback-icon";
-import { GithubIcon } from "../icons/navbar/github-icon";
-import { SupportIcon } from "../icons/navbar/support-icon";
-import { SearchIcon } from "../icons/searchicon";
-import { BurguerButton } from "./burguer-button";
-import { NotificationsDropdown } from "./notifications-dropdown";
-import { UserDropdown } from "./user-dropdown";
-import { Input } from "@nextui-org/input";
+import {
+  Navbar as NextUINavbar,
+  NavbarContent,
+  NavbarMenu,
+  NavbarMenuToggle,
+  NavbarBrand,
+  NavbarItem,
+  NavbarMenuItem,
+} from "@nextui-org/navbar";
+import { User } from "@nextui-org/user";
+import { Kbd } from "@nextui-org/kbd";
 import { Link } from "@nextui-org/link";
+import { Input } from "@nextui-org/input";
 
-interface Props {
-  children: React.ReactNode;
-}
+import { link as linkStyles } from "@nextui-org/theme";
 
-export const NavbarWrapper = ({ children }: Props) => {
+import { siteConfig } from "@/config/site";
+import NextLink from "next/link";
+import clsx from "clsx";
+
+import { ThemeSwitch } from "@/components/theme-switch";
+import { SearchIcon } from "@/components/icons/searchicon";
+
+import { Logo } from "@/components/icons/logo";
+import LocaleSwitcher from "../localization/locale-switch";
+import { useTranslations } from "next-intl";
+import { signOut, useSession } from "next-auth/react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  DropdownSection,
+} from "@nextui-org/dropdown";
+import { useEffect, useState } from "react";
+import { CustomSession } from "@/types";
+import UserDropdown from "./user-dropdown";
+import { NotificationsDropdown } from "./notifications-dropdown";
+import { MessageDropdown } from "./messages-dropdown";
+
+export const Navbar = () => {
+  const translate = useTranslations("nav");
+  const session = useSession();
+  const [sessionData, setSessionData] = useState<CustomSession>();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      setSessionData(session.data);
+    }
+  }, [session]);
+
   return (
-    <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-      <Navbar
-        isBordered
-        className="w-full"
-        classNames={{
-          wrapper: "w-full max-w-full",
-        }}
-      >
-        <NavbarContent className="md:hidden">
-          <BurguerButton />
-        </NavbarContent>
-        <NavbarContent className="w-full max-md:hidden">
-          <Input
-            startContent={<SearchIcon />}
-            isClearable
-            className="w-full"
-            classNames={{
-              input: "w-full",
-              mainWrapper: "w-full",
-            }}
-            placeholder="Search..."
-          />
-        </NavbarContent>
-        <NavbarContent
-          justify="end"
-          className="w-fit data-[justify=end]:flex-grow-0"
-        >
-          <div className="flex items-center gap-2 max-md:hidden">
-            <FeedbackIcon />
-            <span>Feedback?</span>
-          </div>
-
-          <NotificationsDropdown />
-
-          <div className="max-md:hidden">
-            <SupportIcon />
-          </div>
-
-          <Link
-            href="https://github.com/Siumauricio/nextui-dashboard-template"
-            target={"_blank"}
+    <NextUINavbar maxWidth="xl" position="sticky">
+      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+        <NavbarBrand as="li" className="gap-3 max-w-fit">
+          <NextLink
+            className=" hidden sm:flex justify-start items-center gap-1"
+            href="/"
           >
-            <GithubIcon />
-          </Link>
-          <NavbarContent>
-            <UserDropdown />
-          </NavbarContent>
+            <Logo />
+            <p className="font-bold text-inherit">Student Space</p>
+          </NextLink>
+        </NavbarBrand>
+        <NavbarContent className="sm:hidden basis-1 pl-4" justify="start">
+          <NavbarMenuToggle />
         </NavbarContent>
-      </Navbar>
-      {children}
-    </div>
+        <NavbarContent>
+          <ul className="hidden sm:flex gap-4 justify-start ml-2">
+            {siteConfig.navItems.map((item) => (
+              <NavbarItem key={item.href}>
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  )}
+                  color="foreground"
+                  href={item.href}
+                >
+                  {translate(item.label)}
+                </NextLink>
+              </NavbarItem>
+            ))}
+          </ul>
+        </NavbarContent>
+      </NavbarContent>
+
+      <NavbarContent className="flex basis-full" justify="end">
+        <MessageDropdown />
+        <NotificationsDropdown />
+        <UserDropdown sessionData={sessionData} />
+      </NavbarContent>
+
+      <NavbarMenu>
+        <div className="mx-4 mt-2 flex flex-col gap-2">
+          {siteConfig.navMenuItems.map((item, index) => (
+            <NavbarMenuItem key={`${item}-${index}`}>
+              <NextLink color={"foreground"} href="#">
+                {translate(item.label)}
+              </NextLink>
+            </NavbarMenuItem>
+          ))}
+        </div>
+      </NavbarMenu>
+    </NextUINavbar>
   );
 };

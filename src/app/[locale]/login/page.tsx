@@ -1,8 +1,9 @@
 import { useTranslations } from "next-intl";
-import LoginForm from "./login-form";
+import LoginForm from "../../../components/login/form";
 import { ThemeSwitch } from "@/components/theme-switch";
-import LocaleSwitcher from "@/components/locale-switch";
+import LocaleSwitcher from "@/components/localization/locale-switch";
 import { cookies } from "next/headers";
+import { Base } from "./layout.styles";
 
 export default function LoginPage() {
   const translate = useTranslations("login-page");
@@ -12,8 +13,8 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="flex sm:flex-row mb-3 justify-between flex-col gap-2">
-        <h1 className="text-2xl">{translate("title")}</h1>
+      <div className={Base.Header()}>
+        <h1 className={Base.Title()}>{translate("title")}</h1>
         <ThemeSwitch />
         <LocaleSwitcher />
       </div>

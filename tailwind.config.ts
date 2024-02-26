@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { nextui } from "@nextui-org/theme";
+import Scrollbar from "tailwind-scrollbar";
 
 const config: Config = {
   content: [
@@ -16,6 +17,6 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui(), Scrollbar],
 };
 export default config;

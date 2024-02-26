@@ -26,6 +26,7 @@ const authMiddleware = withAuth(
     },
     pages: {
       signIn: "/login",
+      error: "/login",
     },
   }
 );
@@ -37,13 +38,23 @@ export default async function middleware(req: NextRequest) {
       .join("|")})/?$`,
     "i"
   );
+
+  const restrictedPathnameRegex = RegExp(
+    `^(/(${locales.join("|")}))?(${requireAdminPages
+      .flatMap((p) => (p === "/" ? ["", "/"] : p))
+      .map((p) => `(${p}.*)`)
+      .join("|")})/?$`,
+    "i"
+  );
+
   const token = await getToken({ req });
   const isAuthenticated = !!token;
 
   const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
+  const isRestrictedPage = restrictedPathnameRegex.test(req.nextUrl.pathname);
 
   if (
-    requireAdminPages.some((p) => req.nextUrl.pathname.startsWith(p)) &&
+    isRestrictedPage &&
     (!isAuthenticated ||
       !(token as CustomJWT)?.decoded?.realm_access.roles.includes("ADMIN"))
   ) {

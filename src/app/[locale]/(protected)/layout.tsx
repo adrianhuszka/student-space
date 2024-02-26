@@ -1,28 +1,7 @@
-import { Navbar } from "@/components/navbar";
+import { MainLayout } from "@/components/layout/main-layout";
+import { Navbar } from "@/components/navbar/Navbar.1";
 import { Link } from "@nextui-org/link";
 
-export default function LoginLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <>
-      <header>
-        <Navbar />
-      </header>
-      <main className="flex-grow overflow-hidden">{children}</main>
-      <footer className="w-full flex items-center justify-center py-3">
-        <Link
-          isExternal
-          className="flex items-center gap-1 text-current"
-          href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-          title="nextui.org homepage"
-        >
-          <span className="text-default-600">Powered by</span>
-          <p className="text-primary">NextUI</p>
-        </Link>
-      </footer>
-    </>
-  );
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <MainLayout>{children}</MainLayout>;
 }

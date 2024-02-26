@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { ChangeEvent, ReactNode, useTransition } from "react";
-import { useRouter, usePathname } from "../navigation";
+import { useRouter, usePathname } from "../../navigation";
 import { useTranslations } from "next-intl";
 import { Select, SelectItem } from "@nextui-org/select";
 

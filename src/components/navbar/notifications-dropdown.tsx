@@ -14,7 +14,7 @@ export const NotificationsDropdown = () => {
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <NavbarItem>
-          <NotificationIcon />
+          <NotificationIcon count={2} />
         </NavbarItem>
       </DropdownTrigger>
       <DropdownMenu className="w-80" aria-label="Avatar Actions">

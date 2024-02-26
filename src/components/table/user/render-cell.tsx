@@ -1,27 +1,35 @@
-import { User } from "@nextui-org/user";
-import React from "react";
-import { DeleteIcon } from "../icons/table/delete-icon";
-import { EditIcon } from "../icons/table/edit-icon";
-import { EyeIcon } from "../icons/table/eye-icon";
-import { users } from "./data";
+import { DeleteIcon } from "@/components/icons/table/delete-icon";
+import { EditIcon } from "@/components/icons/table/edit-icon";
+import { EyeIcon } from "@/components/icons/table/eye-icon";
+import { Chip, ChipProps } from "@nextui-org/chip";
 import { Tooltip } from "@nextui-org/tooltip";
-import { Chip } from "@nextui-org/chip";
+import { User } from "@nextui-org/user";
+import { users } from "./data";
+import React from "react";
 
-interface Props {
-  user: (typeof users)[number];
-  columnKey: string | React.Key;
-}
+type User = (typeof users)[0];
 
-export const RenderCell = ({ user, columnKey }: Props) => {
-  // @ts-ignore
-  const cellValue = user[columnKey];
+export default function RenderCell({
+  user,
+  columnKey,
+}: {
+  user: User;
+  columnKey: React.Key;
+}) {
+  const statusColorMap: Record<string, ChipProps["color"]> = {
+    active: "success",
+    paused: "danger",
+    vacation: "warning",
+  };
+
+  const cellValue = user[columnKey as keyof User];
+
   switch (columnKey) {
     case "name":
       return (
         <User
-          avatarProps={{
-            src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-          }}
+          avatarProps={{ radius: "lg", src: user.avatar }}
+          description={user.email}
           name={cellValue}
         >
           {user.email}
@@ -29,35 +37,27 @@ export const RenderCell = ({ user, columnKey }: Props) => {
       );
     case "role":
       return (
-        <div>
-          <div>
-            <span>{cellValue}</span>
-          </div>
-          <div>
-            <span>{user.team}</span>
-          </div>
+        <div className="flex flex-col">
+          <p className="text-bold text-small capitalize">{cellValue}</p>
+          <p className="text-bold text-tiny capitalize text-default-400">
+            {user.team}
+          </p>
         </div>
       );
     case "status":
       return (
         <Chip
+          className="capitalize"
+          color={statusColorMap[user.status]}
           size="sm"
           variant="flat"
-          color={
-            cellValue === "active"
-              ? "success"
-              : cellValue === "paused"
-              ? "danger"
-              : "warning"
-          }
         >
-          <span className="capitalize text-xs">{cellValue}</span>
+          {cellValue}
         </Chip>
       );
-
     case "actions":
       return (
-        <div className="flex items-center gap-4 ">
+        <div className="relative flex justify-end items-center gap-2">
           <div>
             <Tooltip content="Details">
               <button onClick={() => console.log("View user", user.id)}>
@@ -88,4 +88,4 @@ export const RenderCell = ({ user, columnKey }: Props) => {
     default:
       return cellValue;
   }
-};
+}

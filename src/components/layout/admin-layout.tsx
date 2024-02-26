@@ -25,7 +25,7 @@ export const Layout = ({ children }: Props) => {
       <section className="flex">
         <SidebarWrapper />
         {/* <NavbarWrapper>{children}</NavbarWrapper> */}
-        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden md:ms-[16rem]">
           {children}
         </div>
       </section>

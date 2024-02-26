@@ -1,4 +1,16 @@
 {
   "java.configuration.updateBuildConfiguration": "automatic",
-  "java.compile.nullAnalysis.mode": "automatic"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "138.3.248.186",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "Postgres",
+      "database": "osztalyzseb",
+      "username": "postgres"
+    }
+  ]
 }

@@ -5,6 +5,8 @@ import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import clsx from "clsx";
+import AuthStatus from "@/components/session/status";
+import { Root } from "./layout.styles";
 
 export const metadata: Metadata = {
   title: {
@@ -38,15 +40,14 @@ export default function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head />
-      <body
-        className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
+      <body className={clsx(Root(), fontSans.variable)}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-            <div className="relative flex flex-col h-screen">{children}</div>
+            <div className={Root.Overlay()}>
+              <AuthStatus wrapperStyle={Root.Loader()} spinnerSize="lg">
+                {children}
+              </AuthStatus>
+            </div>
           </Providers>
         </NextIntlClientProvider>
       </body>

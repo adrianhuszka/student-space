@@ -8,6 +8,7 @@ import { FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { LoginFormS } from "./form.styles";
 
 export default function LoginForm({ username }: { username: string }) {
   const { pending } = useFormStatus();
@@ -34,7 +35,7 @@ export default function LoginForm({ username }: { username: string }) {
         action="/api/auth/callback/credentials"
         onSubmit={onSubmit}
         method="post"
-        className="flex flex-col gap-2"
+        className={LoginFormS()}
       >
         <Input
           type="text"
@@ -56,23 +57,13 @@ export default function LoginForm({ username }: { username: string }) {
         <Checkbox name="remember-me" size="sm" defaultSelected={!!username}>
           {translate("remember-me")}
         </Checkbox>
-        <div className="text-red-700">
+        <div className={LoginFormS.ErrorText()}>
           {urlError && urlError !== "" && <p>{translate(urlError)}</p>}
         </div>
         <Button aria-disabled={pending} type="submit">
           {translate("submit-btn")}
         </Button>
       </form>
-      {/* <Button
-        className="mt-3"
-        onClick={() =>
-          signIn("keycloak", {
-            redirect: true,
-          })
-        }
-      >
-        Sign in with Keycloak
-      </Button> */}
     </>
   );
 }

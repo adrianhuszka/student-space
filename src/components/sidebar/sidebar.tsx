@@ -1,32 +1,20 @@
 import React from "react";
 import { Sidebar } from "./sidebar.styles";
-import { Avatar } from "@nextui-org/avatar";
-import { Tooltip } from "@nextui-org/tooltip";
-import { CompaniesDropdown } from "./companies-dropdown";
-import { HomeIcon } from "../icons/sidebar/home-icon";
-import { PaymentsIcon } from "../icons/sidebar/payments-icon";
-import { BalanceIcon } from "../icons/sidebar/balance-icon";
-import { AccountsIcon } from "../icons/sidebar/accounts-icon";
-import { CustomersIcon } from "../icons/sidebar/customers-icon";
-import { ProductsIcon } from "../icons/sidebar/products-icon";
-import { ReportsIcon } from "../icons/sidebar/reports-icon";
-import { DevIcon } from "../icons/sidebar/dev-icon";
-import { ViewIcon } from "../icons/sidebar/view-icon";
-import { SettingsIcon } from "../icons/sidebar/settings-icon";
-import { CollapseItems } from "./collapse-items";
+import { HomeIcon } from "@/components/icons/sidebar/home-icon";
+import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
-import { FilterIcon } from "../icons/sidebar/filter-icon";
-import { useSidebarContext } from "../layout/layout-context";
-import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
+import { useSidebarContext } from "@/components/layout/layout-context";
+import { ChangeLogIcon } from "@/components/icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
+import { AccountsIcon } from "@/components/icons/sidebar/accounts-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
 
   return (
-    <aside className="h-full z-[202] sticky top-0">
+    <aside className="h-full z-[202] fixed top-0 mt-16">
       {collapsed ? (
         <div className={Sidebar.Overlay()} onClick={setCollapsed} />
       ) : null}
@@ -43,12 +31,18 @@ export const SidebarWrapper = () => {
               isActive={pathname === "/admin/dashboard"}
               href="dashboard"
             />
-            <SidebarMenu title="Main Menu">
+            <SidebarMenu title="Main menu">
               <SidebarItem
                 isActive={pathname === "/admin/accounts"}
                 title="Accounts"
                 icon={<AccountsIcon />}
                 href="accounts"
+              />
+              <SidebarItem
+                isActive={pathname === "/admin/groups"}
+                title="Groups"
+                icon={<AccountsIcon />}
+                href="groups"
               />
             </SidebarMenu>
 

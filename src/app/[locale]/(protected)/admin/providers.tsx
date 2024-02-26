@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/admin-layout";
 
 export interface ProvidersProps {
   children: React.ReactNode;
