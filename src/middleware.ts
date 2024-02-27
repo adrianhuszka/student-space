@@ -4,10 +4,9 @@ import createIntlMiddleware from "next-intl/middleware";
 import { locales, localePrefix, defaultLocale } from "@/config/i18n";
 import { getToken } from "next-auth/jwt";
 import { CustomJWT } from "./types";
+import { Pages } from "./path-roles";
 
 const publicPages = ["/login"];
-
-const requireAdminPages = ["/admin"];
 
 const intlMiddleware = createIntlMiddleware({
   locales,
@@ -22,7 +21,7 @@ const authMiddleware = withAuth(
   (req) => intlMiddleware(req),
   {
     callbacks: {
-      authorized: ({ token }) => token != null,
+      authorized: ({ token }) => !!token,
     },
     pages: {
       signIn: "/login",
@@ -40,8 +39,9 @@ export default async function middleware(req: NextRequest) {
   );
 
   const restrictedPathnameRegex = RegExp(
-    `^(/(${locales.join("|")}))?(${requireAdminPages
-      .flatMap((p) => (p === "/" ? ["", "/"] : p))
+    `^(/(${locales.join("|")}))?(${Pages.flatMap((p) =>
+      p.path === "/" ? ["", "/"] : p.path
+    )
       .map((p) => `(${p}.*)`)
       .join("|")})/?$`,
     "i"
@@ -56,7 +56,18 @@ export default async function middleware(req: NextRequest) {
   if (
     isRestrictedPage &&
     (!isAuthenticated ||
-      !(token as CustomJWT)?.decoded?.realm_access.roles.includes("ADMIN"))
+      !Pages.some((page) => {
+        const pagePathRegex = new RegExp(
+          `^(/(${locales.join("|")}))?/?(en|hu)?(${page.path})`,
+          "i"
+        );
+        return (
+          pagePathRegex.test(req.nextUrl.pathname) &&
+          page.roles.some((role) =>
+            (token as CustomJWT)?.decoded?.realm_access.roles.includes(role)
+          )
+        );
+      }))
   ) {
     return NextResponse.redirect(new URL("/forbidden", req.nextUrl));
   }

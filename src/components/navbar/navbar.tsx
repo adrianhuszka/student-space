@@ -9,31 +9,15 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
-import { User } from "@nextui-org/user";
-import { Kbd } from "@nextui-org/kbd";
-import { Link } from "@nextui-org/link";
-import { Input } from "@nextui-org/input";
 
 import { link as linkStyles } from "@nextui-org/theme";
 
 import { siteConfig } from "@/config/site";
 import NextLink from "next/link";
 import clsx from "clsx";
-
-import { ThemeSwitch } from "@/components/theme-switch";
-import { SearchIcon } from "@/components/icons/searchicon";
-
 import { Logo } from "@/components/icons/logo";
-import LocaleSwitcher from "../localization/locale-switch";
 import { useTranslations } from "next-intl";
-import { signOut, useSession } from "next-auth/react";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  DropdownSection,
-} from "@nextui-org/dropdown";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { CustomSession } from "@/types";
 import UserDropdown from "./user-dropdown";
@@ -52,7 +36,13 @@ export const Navbar = () => {
   }, [session]);
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar
+      maxWidth="xl"
+      position="sticky"
+      classNames={{
+        wrapper: "px-0 sm:px-4",
+      }}
+    >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink

@@ -7,15 +7,23 @@ import {
 } from "@nextui-org/dropdown";
 import React from "react";
 import { NavbarItem } from "@nextui-org/navbar";
-import { MessageIcon } from "../icons/navbar/message-icon";
+import { Badge } from "@nextui-org/badge";
 import { User } from "@nextui-org/user";
+import { Messages1 } from "iconic-react";
 
 export const MessageDropdown = () => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <NavbarItem>
-          <MessageIcon count={1} />
+          <Badge
+            content="5"
+            color="danger"
+            placement="bottom-right"
+            className="cursor-pointer"
+          >
+            <Messages1 className="text-default-400 cursor-pointer" size={32} />
+          </Badge>
         </NavbarItem>
       </DropdownTrigger>
       <DropdownMenu className="w-80" aria-label="Avatar Actions">

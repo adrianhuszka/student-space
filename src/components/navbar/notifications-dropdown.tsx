@@ -6,15 +6,26 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import React from "react";
-import { NotificationIcon } from "../icons/navbar/notificationicon";
+import { Notification } from "iconic-react";
 import { NavbarItem } from "@nextui-org/navbar";
+import { Badge } from "@nextui-org/badge";
 
 export const NotificationsDropdown = () => {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <NavbarItem>
-          <NotificationIcon count={2} />
+          <Badge
+            content="5"
+            color="danger"
+            placement="bottom-right"
+            className="cursor-pointer"
+          >
+            <Notification
+              className="text-default-400 cursor-pointer"
+              size={30}
+            />
+          </Badge>
         </NavbarItem>
       </DropdownTrigger>
       <DropdownMenu className="w-80" aria-label="Avatar Actions">

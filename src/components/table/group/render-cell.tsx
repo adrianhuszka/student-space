@@ -3,7 +3,6 @@ import { EditIcon } from "@/components/icons/table/edit-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { Tooltip } from "@nextui-org/tooltip";
-import { User } from "@nextui-org/user";
 import { groups } from "./data";
 import React from "react";
 import { Button } from "@nextui-org/button";
@@ -71,9 +70,9 @@ export default function RenderCell({
           <div>
             <Tooltip content="Details" color="primary">
               <Button
-                onClick={() => console.log("View user", group.id)}
+                onClick={() => console.log("View group", group.id)}
                 isIconOnly
-                aria-label="View user"
+                aria-label="View group"
                 variant="light"
                 color="primary"
               >
@@ -82,11 +81,11 @@ export default function RenderCell({
             </Tooltip>
           </div>
           <div>
-            <Tooltip content="Edit user" color="secondary">
+            <Tooltip content="Edit group" color="secondary">
               <Button
-                onClick={() => console.log("Edit user", group.id)}
+                onClick={() => console.log("Edit group", group.id)}
                 isIconOnly
-                aria-label="Edit user"
+                aria-label="Edit group"
                 variant="light"
                 color="secondary"
               >
@@ -95,11 +94,11 @@ export default function RenderCell({
             </Tooltip>
           </div>
           <div>
-            <Tooltip content="Delete user" color="danger">
+            <Tooltip content="Delete group" color="danger">
               <Button
-                onClick={() => console.log("Delete user", group.id)}
+                onClick={() => console.log("Delete group", group.id)}
                 isIconOnly
-                aria-label="Delete user"
+                aria-label="Delete group"
                 variant="light"
                 color="danger"
               >

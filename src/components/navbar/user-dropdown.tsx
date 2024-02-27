@@ -43,6 +43,10 @@ export default function UserDropdown({
               name: undefined,
             }}
             className="transition-transform"
+            classNames={{
+              name: "hidden sm:block",
+              description: "hidden sm:block",
+            }}
             description={"@" + sessionData?.user?.name}
             name={sessionData?.user?.fullName}
           />

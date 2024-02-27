@@ -6,6 +6,7 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { User } from "@nextui-org/user";
 import { users } from "./data";
 import React from "react";
+import { Button } from "@nextui-org/button";
 
 type User = (typeof users)[0];
 
@@ -59,28 +60,42 @@ export default function RenderCell({
       return (
         <div className="relative flex justify-end items-center gap-2">
           <div>
-            <Tooltip content="Details">
-              <button onClick={() => console.log("View user", user.id)}>
+            <Tooltip content="Details" color="primary">
+              <Button
+                onClick={() => console.log("View user", user.id)}
+                isIconOnly
+                aria-label="View user"
+                variant="light"
+                color="primary"
+              >
                 <EyeIcon size={20} fill="#979797" />
-              </button>
+              </Button>
             </Tooltip>
           </div>
           <div>
             <Tooltip content="Edit user" color="secondary">
-              <button onClick={() => console.log("Edit user", user.id)}>
+              <Button
+                onClick={() => console.log("Edit user", user.id)}
+                isIconOnly
+                aria-label="Edit user"
+                variant="light"
+                color="secondary"
+              >
                 <EditIcon size={20} fill="#979797" />
-              </button>
+              </Button>
             </Tooltip>
           </div>
           <div>
-            <Tooltip
-              content="Delete user"
-              color="danger"
-              onClick={() => console.log("Delete user", user.id)}
-            >
-              <button>
+            <Tooltip content="Delete user" color="danger">
+              <Button
+                onClick={() => console.log("Delete user", user.id)}
+                isIconOnly
+                aria-label="Delete user"
+                variant="light"
+                color="danger"
+              >
                 <DeleteIcon size={20} fill="#FF0080" />
-              </button>
+              </Button>
             </Tooltip>
           </div>
         </div>

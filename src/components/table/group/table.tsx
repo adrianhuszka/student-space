@@ -75,7 +75,7 @@ export default function GroupTableWrapper() {
     }
 
     return filteredGroups;
-  }, [groups, filterValue, statusFilter]);
+  }, [hasSearchFilter, statusFilter, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -219,10 +219,10 @@ export default function GroupTableWrapper() {
             <SelectItem key="20" value="20">
               20
             </SelectItem>
-            <SelectItem key="20" value="20">
+            <SelectItem key="50" value="50">
               50
             </SelectItem>
-            <SelectItem key="20" value="20">
+            <SelectItem key="100" value="100">
               100
             </SelectItem>
           </Select>
@@ -231,12 +231,12 @@ export default function GroupTableWrapper() {
     );
   }, [
     filterValue,
+    onSearchChange,
     statusFilter,
     visibleColumns,
-    onSearchChange,
     onRowsPerPageChange,
-    groups.length,
-    hasSearchFilter,
+    rowsPerPage,
+    onClear,
   ]);
 
   const bottomContent = React.useMemo(() => {
@@ -276,7 +276,14 @@ export default function GroupTableWrapper() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [
+    selectedKeys,
+    filteredItems.length,
+    page,
+    pages,
+    onPreviousPage,
+    onNextPage,
+  ]);
 
   return (
     <Table
