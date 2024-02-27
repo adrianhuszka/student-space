@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Table,
@@ -10,7 +12,7 @@ import {
   SortDescriptor,
 } from "@nextui-org/table";
 import { Button } from "@nextui-org/button";
-import { columns, groups, statusOptions } from "./data";
+import { columns, Group } from "./data";
 import { ChevronDownIcon } from "@/components/icons/cherron-dropdown";
 import { PlusIcon } from "@/components/icons/plus";
 import { SearchIcon } from "@/components/icons/searchicon";
@@ -26,11 +28,9 @@ import { Input } from "@nextui-org/input";
 import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "roles", "status", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
 
-type Group = (typeof groups)[0];
-
-export default function GroupTableWrapper() {
+export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
@@ -38,7 +38,6 @@ export default function GroupTableWrapper() {
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
-  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "name",
@@ -65,17 +64,9 @@ export default function GroupTableWrapper() {
         Group.name.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
-    if (
-      statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
-    ) {
-      filteredGroups = filteredGroups.filter((Group) =>
-        Array.from(statusFilter).includes(Group.status)
-      );
-    }
 
     return filteredGroups;
-  }, [hasSearchFilter, statusFilter, filterValue]);
+  }, [groups, hasSearchFilter, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -151,30 +142,6 @@ export default function GroupTableWrapper() {
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
                   Columns
                 </Button>
               </DropdownTrigger>
@@ -232,8 +199,8 @@ export default function GroupTableWrapper() {
   }, [
     filterValue,
     onSearchChange,
-    statusFilter,
     visibleColumns,
+    groups.length,
     onRowsPerPageChange,
     rowsPerPage,
     onClear,

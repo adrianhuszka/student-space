@@ -3,11 +3,9 @@ import { EditIcon } from "@/components/icons/table/edit-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { Tooltip } from "@nextui-org/tooltip";
-import { groups } from "./data";
+import { Group } from "./data";
 import React from "react";
 import { Button } from "@nextui-org/button";
-
-type Group = (typeof groups)[0];
 
 export default function RenderCell({
   group,
@@ -31,20 +29,27 @@ export default function RenderCell({
           <p className="text-bold text-small capitalize">{cellValue}</p>
         </div>
       );
-    case "roles":
+    case "members":
+      return (
+        <div className="flex flex-col">
+          <p className="text-bold text-small capitalize">PLACEHOLDER</p>
+        </div>
+      );
+    case "realmRoles":
       return (
         <div className="flex flex-1 gap-2">
-          {group.roles.map((role) => (
-            <Chip
-              key={role}
-              className="capitalize"
-              color={role === "Admin" ? "danger" : "success"}
-              size="sm"
-              variant="flat"
-            >
-              {role}
-            </Chip>
-          ))}
+          {group.realmRoles &&
+            group.realmRoles.map((role) => (
+              <Chip
+                key={role}
+                className="capitalize"
+                color={role === "Admin" ? "danger" : "success"}
+                size="sm"
+                variant="flat"
+              >
+                {role}
+              </Chip>
+            ))}
         </div>
       );
     case "path":
@@ -52,17 +57,6 @@ export default function RenderCell({
         <div className="flex flex-col">
           <p className="text-bold text-small capitalize">{cellValue}</p>
         </div>
-      );
-    case "status":
-      return (
-        <Chip
-          className="capitalize"
-          color={statusColorMap[group.status]}
-          size="sm"
-          variant="flat"
-        >
-          {cellValue}
-        </Chip>
       );
     case "actions":
       return (
