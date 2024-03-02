@@ -7,6 +7,8 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import { SessionProvider } from "next-auth/react";
 import { Next13ProgressBar } from "next13-progressbar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -20,6 +22,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <NextUIProvider navigate={router.push}>
       <SessionProvider>
         <NextThemesProvider {...themeProps}>
+          <ToastContainer />
           {children}
           <Next13ProgressBar
             height="4px"

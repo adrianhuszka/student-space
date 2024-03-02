@@ -28,18 +28,18 @@ export const SidebarWrapper = () => {
             <SidebarItem
               title="Dashboard"
               icon={<HomeIcon />}
-              isActive={pathname === "/admin/dashboard"}
+              isActive={pathname.endsWith("/admin/dashboard")}
               href="dashboard"
             />
             <SidebarMenu title="Main menu">
               <SidebarItem
-                isActive={pathname === "/admin/accounts"}
+                isActive={pathname.endsWith("/admin/accounts")}
                 title="Accounts"
                 icon={<AccountsIcon />}
                 href="accounts"
               />
               <SidebarItem
-                isActive={pathname === "/admin/groups"}
+                isActive={pathname.endsWith("/admin/groups")}
                 title="Groups"
                 icon={<AccountsIcon />}
                 href="groups"
@@ -51,6 +51,12 @@ export const SidebarWrapper = () => {
                 isActive={pathname === "/settings"}
                 title="Settings"
                 icon={<SettingsIcon />}
+              />
+              <SidebarItem
+                title="Keycloak Admin Panel"
+                icon={<AccountsIcon />}
+                href="http://138.3.248.186:8888/admin/StudentSpace/console/"
+                taget="_blank"
               />
             </SidebarMenu>
 

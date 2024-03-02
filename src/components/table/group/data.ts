@@ -9,7 +9,7 @@ const columns = [
 ];
 
 type Group = {
-  id: number;
+  id: string;
   name: string;
   realmRoles: string[];
   path: string;

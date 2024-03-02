@@ -6,6 +6,8 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { Group } from "./data";
 import React from "react";
 import { Button } from "@nextui-org/button";
+import { remove } from "@/app/actions/group-actions";
+import { toast } from "react-toastify";
 
 export default function RenderCell({
   group,
@@ -21,6 +23,20 @@ export default function RenderCell({
   };
 
   const cellValue = group[columnKey as keyof Group];
+
+  const handleDelete = async (groupId: string) => {
+    const response = await remove(groupId);
+    console.log(response);
+    if (response.status)
+      switch (response.status) {
+        case 200:
+          toast.success("Successfully deleted group!");
+          break;
+        default:
+          toast.error("Failed to delete group!");
+          break;
+      }
+  };
 
   switch (columnKey) {
     case "name":
@@ -89,15 +105,17 @@ export default function RenderCell({
           </div>
           <div>
             <Tooltip content="Delete group" color="danger">
-              <Button
-                onClick={() => console.log("Delete group", group.id)}
-                isIconOnly
-                aria-label="Delete group"
-                variant="light"
-                color="danger"
-              >
-                <DeleteIcon size={20} fill="#FF0080" />
-              </Button>
+              <form>
+                <Button
+                  onClick={() => handleDelete(group.id)}
+                  isIconOnly
+                  aria-label="Delete group"
+                  variant="light"
+                  color="danger"
+                >
+                  <DeleteIcon size={20} fill="#FF0080" />
+                </Button>
+              </form>
             </Tooltip>
           </div>
         </div>

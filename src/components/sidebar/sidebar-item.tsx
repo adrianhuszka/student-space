@@ -8,9 +8,16 @@ interface Props {
   icon: React.ReactNode;
   isActive?: boolean;
   href?: string;
+  taget?: string;
 }
 
-export const SidebarItem = ({ icon, title, isActive, href = "" }: Props) => {
+export const SidebarItem = ({
+  icon,
+  title,
+  isActive,
+  href = "",
+  taget = "_self",
+}: Props) => {
   const { collapsed, setCollapsed } = useSidebarContext();
 
   const handleClick = () => {
@@ -22,6 +29,7 @@ export const SidebarItem = ({ icon, title, isActive, href = "" }: Props) => {
     <NextLink
       href={href}
       className="text-default-900 active:bg-none max-w-full"
+      target={taget}
     >
       <div
         className={clsx(
