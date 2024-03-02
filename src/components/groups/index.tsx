@@ -24,7 +24,6 @@ const fetchGroups = async () => {
 
 export const Groups = async () => {
   const groups: Group[] | undefined = await fetchGroups();
-  console.log(groups);
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       <h3 className="text-xl font-semibold">All Groups</h3>

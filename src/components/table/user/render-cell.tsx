@@ -4,17 +4,15 @@ import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { Tooltip } from "@nextui-org/tooltip";
 import { User } from "@nextui-org/user";
-import { users } from "./data";
+import { User as UserType } from "./data";
 import React from "react";
 import { Button } from "@nextui-org/button";
-
-type User = (typeof users)[0];
 
 export default function RenderCell({
   user,
   columnKey,
 }: {
-  user: User;
+  user: UserType;
   columnKey: React.Key;
 }) {
   const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -23,37 +21,73 @@ export default function RenderCell({
     vacation: "warning",
   };
 
-  const cellValue = user[columnKey as keyof User];
-
   switch (columnKey) {
     case "name":
       return (
         <User
-          avatarProps={{ radius: "lg", src: user.avatar }}
+          avatarProps={{
+            radius: "lg",
+            src: user.attributes.profile_picture[0],
+            name: undefined,
+            showFallback: true,
+          }}
           description={user.email}
-          name={cellValue}
+          name={user.name}
         >
           {user.email}
         </User>
       );
-    case "role":
+    case "realmRoles":
+      return (
+        <div className="flex flex-1 gap-2">
+          {user.realmRoles &&
+            user.realmRoles.map((role) => (
+              <Chip
+                key={role.id}
+                className="capitalize"
+                color={role.name === "Admin" ? "danger" : "success"}
+                size="sm"
+                variant="flat"
+              >
+                {role.name}
+              </Chip>
+            ))}
+        </div>
+      );
+    case "groups":
+      return (
+        <div className="flex flex-1 gap-2">
+          {user.groups &&
+            user.groups.map((group) => (
+              <Chip
+                key={group.id}
+                className="capitalize"
+                color={"primary"}
+                size="sm"
+                variant="flat"
+              >
+                {group.name}
+              </Chip>
+            ))}
+        </div>
+      );
+    case "attributes":
       return (
         <div className="flex flex-col">
-          <p className="text-bold text-small capitalize">{cellValue}</p>
-          <p className="text-bold text-tiny capitalize text-default-400">
-            {user.team}
+          <p className="text-bold text-small capitalize">
+            {user.attributes.phoneNumber}
           </p>
         </div>
       );
-    case "status":
+    case "enabled":
       return (
         <Chip
           className="capitalize"
-          color={statusColorMap[user.status]}
+          color={user.enabled == true ? "success" : "danger"}
           size="sm"
           variant="flat"
         >
-          {cellValue}
+          {user.enabled == true ? "active" : "disabled"}
         </Chip>
       );
     case "actions":
@@ -101,6 +135,6 @@ export default function RenderCell({
         </div>
       );
     default:
-      return cellValue;
+      return <div>Undable to render this cell</div>;
   }
 }

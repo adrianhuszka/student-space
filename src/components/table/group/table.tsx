@@ -27,6 +27,8 @@ import {
 import { Input } from "@nextui-org/input";
 import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
+import { AddGroup } from "@/components/groups/add-group-modal";
+import { useDisclosure } from "@nextui-org/modal";
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
 
@@ -45,6 +47,8 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
   });
 
   const [page, setPage] = React.useState(1);
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -160,7 +164,7 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />}>
+            <Button color="primary" endContent={<PlusIcon />} onPress={onOpen}>
               Add New
             </Button>
           </div>
@@ -253,52 +257,55 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
   ]);
 
   return (
-    <Table
-      aria-label="Example table with custom cells, pagination and sorting"
-      isHeaderSticky
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      classNames={{
-        wrapper: "",
-        td: "text-start",
-      }}
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSortChange={setSortDescriptor}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      onSelectionChange={setSelectedKeys}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No Groups found"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => (
-              <TableCell
-                className="text-start"
-                onClick={(e) => {
-                  if (columnKey === "actions") {
-                    e.stopPropagation();
-                  }
-                }}
-              >
-                {RenderCell({ group: item, columnKey: columnKey })}
-              </TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      <Table
+        aria-label="Example table with custom cells, pagination and sorting"
+        isHeaderSticky
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
+        classNames={{
+          wrapper: "",
+          td: "text-start",
+        }}
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        onSortChange={setSortDescriptor}
+        selectedKeys={selectedKeys}
+        selectionMode="multiple"
+        onSelectionChange={setSelectedKeys}
+      >
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={"No Groups found"} items={sortedItems}>
+          {(item) => (
+            <TableRow key={item.id}>
+              {(columnKey) => (
+                <TableCell
+                  className="text-start"
+                  onClick={(e) => {
+                    if (columnKey === "actions") {
+                      e.stopPropagation();
+                    }
+                  }}
+                >
+                  {RenderCell({ group: item, columnKey: columnKey })}
+                </TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <AddGroup isOpen={isOpen} onOpenChange={onOpenChange} />
+    </>
   );
 }

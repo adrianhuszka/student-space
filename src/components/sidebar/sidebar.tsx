@@ -28,18 +28,18 @@ export const SidebarWrapper = () => {
             <SidebarItem
               title="Dashboard"
               icon={<HomeIcon />}
-              isActive={pathname === "/admin/dashboard"}
+              isActive={pathname.endsWith("/admin/dashboard")}
               href="dashboard"
             />
             <SidebarMenu title="Main menu">
               <SidebarItem
-                isActive={pathname === "/admin/accounts"}
+                isActive={pathname.endsWith("/admin/accounts")}
                 title="Accounts"
                 icon={<AccountsIcon />}
                 href="accounts"
               />
               <SidebarItem
-                isActive={pathname === "/admin/groups"}
+                isActive={pathname.endsWith("/admin/groups")}
                 title="Groups"
                 icon={<AccountsIcon />}
                 href="groups"
