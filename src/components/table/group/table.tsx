@@ -29,6 +29,8 @@ import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
 import { AddGroup } from "@/components/groups/add-group-modal";
 import { useDisclosure } from "@nextui-org/modal";
+import { AddGroup } from "@/components/groups/add-group-modal";
+import { useDisclosure } from "@nextui-org/modal";
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
 
@@ -47,6 +49,8 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
   });
 
   const [page, setPage] = React.useState(1);
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -164,6 +168,7 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <Button color="primary" endContent={<PlusIcon />} onPress={onOpen}>
             <Button color="primary" endContent={<PlusIcon />} onPress={onOpen}>
               Add New
             </Button>
