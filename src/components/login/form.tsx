@@ -45,6 +45,7 @@ export default function LoginForm({ username }: { username: string }) {
           label={translate("username")}
           defaultValue={username}
           required
+          autoFocus
         />
         <Input
           type="password"

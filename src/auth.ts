@@ -22,12 +22,14 @@ async function refreshToken(token: CustomJWT) {
   const refreshToken = await resp.json();
   if (!resp.ok) throw refreshToken;
 
+  const newExpiresAt = Math.floor(Date.now() / 1000) + refreshToken.expires_in;
+
   return {
     ...token,
     access_token: refreshToken.access_token,
     decoded: jwtDecode(refreshToken.access_token),
     id_token: refreshToken.id_token,
-    expires_at: Math.floor(Date.now() / 1000) + refreshToken.expires_in,
+    expires_at: newExpiresAt,
     refresh_token: refreshToken.refresh_token,
   };
 }
@@ -136,9 +138,10 @@ const auth: AuthOptions = {
         return token;
       } else {
         console.log("refreshing token");
-
         try {
           const newToken = await refreshToken(token);
+
+          console.log("newToken", newToken.expires_at);
 
           return newToken;
         } catch (err) {

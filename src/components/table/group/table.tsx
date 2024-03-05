@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import {
   Table,
   TableHeader,
@@ -29,34 +28,60 @@ import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
 import { AddGroup } from "@/components/groups/add-group-modal";
 import { useDisclosure } from "@nextui-org/modal";
-import { AddGroup } from "@/components/groups/add-group-modal";
-import { useDisclosure } from "@nextui-org/modal";
+import { useGetGroups } from "@/data/get-groups";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import { Spinner } from "@nextui-org/spinner";
+import { useDebounce } from "@/hooks/debounce";
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
 
-export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
-  const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-    new Set([])
-  );
-  const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
+export default function GroupTableWrapper() {
+  const [page, setPage] = useState(1);
+  const [filterValue, setFilterValue] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { data, error, fetchStatus, refetch } = useGetGroups({
+    search: filterValue,
+    page: page - 1,
+    size: rowsPerPage,
+  });
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error]);
+
+  const debouncedRefetch = useDebounce(() => {
+    refetch();
+  }, 100);
+
+  useEffect(() => {
+    debouncedRefetch();
+  }, [page, rowsPerPage, filterValue]);
+
+  const groups = useMemo(() => {
+    if (data?.length > 0) {
+      return data;
+    }
+    return [];
+  }, [data]);
+
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "name",
     direction: "ascending",
   });
-
-  const [page, setPage] = React.useState(1);
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const hasSearchFilter = Boolean(filterValue);
 
-  const headerColumns = React.useMemo(() => {
+  const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
     return columns.filter((column) =>
@@ -64,7 +89,7 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
     );
   }, [visibleColumns]);
 
-  const filteredItems = React.useMemo(() => {
+  const filteredItems = useMemo(() => {
     let filteredGroups = [...groups];
 
     if (hasSearchFilter) {
@@ -78,14 +103,14 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
-  const items = React.useMemo(() => {
+  const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const sortedItems = React.useMemo(() => {
+  const sortedItems = useMemo(() => {
     return [...items].sort((a: Group, b: Group) => {
       const first = a[sortDescriptor.column as keyof Group] as number;
       const second = b[sortDescriptor.column as keyof Group] as number;
@@ -95,19 +120,19 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
     });
   }, [sortDescriptor, items]);
 
-  const onNextPage = React.useCallback(() => {
+  const onNextPage = useCallback(() => {
     if (page < pages) {
       setPage(page + 1);
     }
   }, [page, pages]);
 
-  const onPreviousPage = React.useCallback(() => {
+  const onPreviousPage = useCallback(() => {
     if (page > 1) {
       setPage(page - 1);
     }
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback(
+  const onRowsPerPageChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       setRowsPerPage(Number(e.target.value));
       setPage(1);
@@ -115,7 +140,7 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
     []
   );
 
-  const onSearchChange = React.useCallback((value?: string) => {
+  const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
       setPage(1);
@@ -124,12 +149,12 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
     }
   }, []);
 
-  const onClear = React.useCallback(() => {
+  const onClear = useCallback(() => {
     setFilterValue("");
     setPage(1);
   }, []);
 
-  const topContent = React.useMemo(() => {
+  const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex justify-between gap-3 items-end">
@@ -168,7 +193,6 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />} onPress={onOpen}>
             <Button color="primary" endContent={<PlusIcon />} onPress={onOpen}>
               Add New
             </Button>
@@ -216,7 +240,7 @@ export default function GroupTableWrapper({ groups }: { groups: Group[] }) {
     onClear,
   ]);
 
-  const bottomContent = React.useMemo(() => {
+  const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
         <span className="w-[30%] text-small text-default-400">

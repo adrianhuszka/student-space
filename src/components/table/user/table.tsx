@@ -26,9 +26,12 @@ import {
 import { Input } from "@nextui-org/input";
 import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
-import { ChangeEvent, FormEvent, useCallback, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useDisclosure } from "@nextui-org/modal";
 import { AddUser } from "@/components/accounts/add-user-modal";
+import { useGetUsers } from "@/data/get-users";
+import { toast } from "react-toastify";
+import { useDebounce } from "@/hooks/debounce";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "name",
@@ -38,19 +41,47 @@ const INITIAL_VISIBLE_COLUMNS = [
   "groups",
 ];
 
-export default function AccountTableWrapper({ users }: { users: User[] }) {
+export default function AccountTableWrapper() {
+  const [page, setPage] = useState(1);
   const [filterValue, setFilterValue] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { data, error, fetchStatus, refetch } = useGetUsers({
+    search: filterValue,
+    page: page - 1,
+    size: rowsPerPage,
+  });
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error]);
+
+  const users = useMemo(() => {
+    if (data?.length > 0) {
+      return data;
+    }
+    return [];
+  }, [data]);
+
+  const debouncedRefetch = useDebounce(() => {
+    refetch();
+  }, 500);
+
+  useEffect(() => {
+    debouncedRefetch();
+  }, [page, rowsPerPage, filterValue]);
+
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "age",
     direction: "ascending",
   });
-  const [page, setPage] = useState(1);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

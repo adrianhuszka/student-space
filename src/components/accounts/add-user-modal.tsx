@@ -10,7 +10,10 @@ import {
 } from "@nextui-org/modal";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { Input } from "@nextui-org/input";
-import { FormEvent, useMemo } from "react";
+import { FormEvent, useEffect, useMemo } from "react";
+import { create } from "@/app/actions/user-actions";
+import { useFormState } from "react-dom";
+import { toast } from "react-toastify";
 
 export const AddUser = ({
   isOpen,
@@ -19,12 +22,28 @@ export const AddUser = ({
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
-  const addUser = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const data = new FormData(event.currentTarget);
-    console.log(data.get("username"));
+  const initialState = {
+    status: NaN,
+    errorMessage: "",
   };
+  const [state, formAction] = useFormState(create, initialState);
+
+  useEffect(() => {
+    if (state.status) {
+      console.log(state);
+      switch (state.status) {
+        case 201:
+          toast.success("Successfully added group!");
+          break;
+        case 409:
+          toast.error("Group already exists!");
+          break;
+        default:
+          toast.error("Failed to add group!");
+          break;
+      }
+    }
+  }, [state]);
 
   const modal = useMemo(() => {
     return (
@@ -56,7 +75,7 @@ export const AddUser = ({
       >
         <ModalContent>
           {(onClose) => (
-            <form onSubmit={addUser}>
+            <form action={formAction}>
               <ModalHeader className="flex flex-col gap-1">
                 Add Account
               </ModalHeader>
@@ -139,7 +158,7 @@ export const AddUser = ({
         </ModalContent>
       </Modal>
     );
-  }, [isOpen, onOpenChange]);
+  }, [formAction, isOpen, onOpenChange]);
 
   return modal;
 };
