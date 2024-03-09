@@ -25,7 +25,6 @@ export async function list({
   );
 
   if (response.status !== 200) {
-    console.error(await response.json());
     throw new Error("Failed to fetch groups");
   }
 

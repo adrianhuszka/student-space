@@ -1,5 +1,5 @@
-import { Accounts } from "@/components/accounts";
+import { Accounts } from "@/components/pages/accounts";
 
-export default async function Home() {
+export default async function AccountsPage() {
   return <Accounts />;
 }

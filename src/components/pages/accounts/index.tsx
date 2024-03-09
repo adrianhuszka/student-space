@@ -1,5 +1,5 @@
 import { list } from "@/app/actions/user-actions";
-import AccountTableWrapper from "../table/user/table";
+import AccountTableWrapper from "@/components/table/user/table";
 import {
   HydrationBoundary,
   QueryClient,

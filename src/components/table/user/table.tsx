@@ -28,7 +28,7 @@ import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useDisclosure } from "@nextui-org/modal";
-import { AddUser } from "@/components/accounts/add-user-modal";
+import { AddUser } from "@/components/pages/accounts/add-user-modal";
 import { useGetUsers } from "@/data/get-users";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/debounce";
@@ -51,12 +51,6 @@ export default function AccountTableWrapper() {
     page: page - 1,
     size: rowsPerPage,
   });
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error.message);
-    }
-  }, [error]);
 
   const users = useMemo(() => {
     if (data?.length > 0) {

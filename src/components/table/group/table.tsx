@@ -26,7 +26,7 @@ import {
 import { Input } from "@nextui-org/input";
 import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
-import { AddGroup } from "@/components/groups/add-group-modal";
+import { AddGroup } from "@/components/pages/groups/add-group-modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { useGetGroups } from "@/data/get-groups";
 import { useCallback, useEffect, useMemo, useState } from "react";
