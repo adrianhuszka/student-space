@@ -14,7 +14,9 @@ type Group = {
   realmRoles: string[];
   path: string;
   members: number;
+  parentId: string;
   subGroupCount: number;
+  subGroups: Group[];
 };
 
 export { columns };

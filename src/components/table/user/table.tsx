@@ -54,6 +54,7 @@ export default function AccountTableWrapper() {
 
   const users = useMemo(() => {
     if (data?.length > 0) {
+      console.log(data);
       return data;
     }
     return [];

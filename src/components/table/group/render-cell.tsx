@@ -8,20 +8,21 @@ import React from "react";
 import { Button } from "@nextui-org/button";
 import { remove } from "@/app/actions/group-actions";
 import { toast } from "react-toastify";
+import { ArrowLeft, ArrowRight } from "iconic-react";
 
 export default function RenderCell({
   group,
   columnKey,
+  setSelectedGroup,
+  selectedGroup,
+  data,
 }: {
   group: Group;
   columnKey: React.Key;
+  setSelectedGroup: (group: Group | null) => void;
+  selectedGroup: Group | null;
+  data: Group[];
 }) {
-  const statusColorMap: Record<string, ChipProps["color"]> = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-  };
-
   const cellValue = group[columnKey as keyof Group];
 
   const handleDelete = async (groupId: string) => {
@@ -42,7 +43,7 @@ export default function RenderCell({
     case "name":
       return (
         <div className="flex flex-col">
-          <p className="text-bold text-small capitalize">{cellValue}</p>
+          <p className="text-bold text-small capitalize">{group.name}</p>
         </div>
       );
     case "members":
@@ -71,12 +72,40 @@ export default function RenderCell({
     case "path":
       return (
         <div className="flex flex-col">
-          <p className="text-bold text-small capitalize">{cellValue}</p>
+          <p className="text-bold text-small capitalize">{group.path}</p>
         </div>
       );
     case "actions":
       return (
         <div className="relative flex justify-end items-center gap-2">
+          <div>
+            <Tooltip content="Parent group" color="default">
+              <Button
+                onClick={() =>
+                  setSelectedGroup(
+                    data.find((g) => g.id === selectedGroup?.parentId) ||
+                      data
+                        .find((g) =>
+                          g.subGroups.find(
+                            (sg) => sg.id === selectedGroup?.parentId
+                          )
+                        )
+                        ?.subGroups.find(
+                          (sg) => sg.id === selectedGroup?.parentId
+                        ) ||
+                      null
+                  )
+                }
+                isIconOnly
+                aria-label="Parent group"
+                variant="light"
+                color="default"
+                isDisabled={!group.parentId}
+              >
+                <ArrowLeft size={20} fill="#979797" />
+              </Button>
+            </Tooltip>
+          </div>
           <div>
             <Tooltip content="Details" color="primary">
               <Button
@@ -118,9 +147,24 @@ export default function RenderCell({
               </form>
             </Tooltip>
           </div>
+          <div>
+            <Tooltip content="Subgroups" color="default">
+              <Button
+                onClick={() => setSelectedGroup(group)}
+                isIconOnly
+                aria-label="Subgroups"
+                variant="light"
+                color="default"
+                isDisabled={!group.subGroupCount}
+              >
+                <ArrowRight size={20} fill="#979797" />
+              </Button>
+            </Tooltip>
+          </div>
         </div>
       );
     default:
-      return cellValue;
+      if (typeof cellValue === "string" || typeof cellValue === "number")
+        return cellValue;
   }
 }

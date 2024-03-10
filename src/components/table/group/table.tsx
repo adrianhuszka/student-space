@@ -31,7 +31,6 @@ import { useDisclosure } from "@nextui-org/modal";
 import { useGetGroups } from "@/data/get-groups";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { Spinner } from "@nextui-org/spinner";
 import { useDebounce } from "@/hooks/debounce";
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
@@ -39,7 +38,8 @@ const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
 export default function GroupTableWrapper() {
   const [page, setPage] = useState(1);
   const [filterValue, setFilterValue] = useState("");
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
 
   const { data, error, fetchStatus, refetch } = useGetGroups({
     search: filterValue,
@@ -62,11 +62,15 @@ export default function GroupTableWrapper() {
   }, [page, rowsPerPage, filterValue]);
 
   const groups = useMemo(() => {
+    console.log("selectedGroup.subGroups", selectedGroup?.subGroups);
+    if (selectedGroup && selectedGroup.subGroups.length > 0) {
+      return selectedGroup.subGroups;
+    }
     if (data?.length > 0) {
       return data;
     }
     return [];
-  }, [data]);
+  }, [data, selectedGroup]);
 
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
@@ -210,12 +214,6 @@ export default function GroupTableWrapper() {
             onChange={onRowsPerPageChange}
             defaultSelectedKeys={[rowsPerPage.toString()]}
           >
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
             <SelectItem key="20" value="20">
               20
             </SelectItem>
@@ -316,6 +314,7 @@ export default function GroupTableWrapper() {
             </TableColumn>
           )}
         </TableHeader>
+
         <TableBody emptyContent={"No Groups found"} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
@@ -328,7 +327,13 @@ export default function GroupTableWrapper() {
                     }
                   }}
                 >
-                  {RenderCell({ group: item, columnKey: columnKey })}
+                  {RenderCell({
+                    group: item,
+                    columnKey: columnKey,
+                    setSelectedGroup,
+                    selectedGroup,
+                    data,
+                  })}
                 </TableCell>
               )}
             </TableRow>
