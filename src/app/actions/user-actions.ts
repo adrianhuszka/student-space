@@ -1,6 +1,6 @@
 "use server";
 
-import { getAccessToken } from "@/utils/sessionTokenAccessor";
+import { getAccessToken, getUserId } from "@/utils/sessionTokenAccessor";
 import { revalidatePath } from "next/cache";
 
 export async function list({
@@ -99,4 +99,27 @@ export async function remove(groupId: string) {
   return {
     status: response.status,
   };
+}
+
+export async function getJoindGroups() {
+  const token = await getAccessToken();
+  const userId = await getUserId();
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/user/${userId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch user groups");
+  }
+
+  const result = await response.json();
+  return result;
 }

@@ -19,3 +19,12 @@ export async function getIdToken() {
   }
   return null;
 }
+
+export async function getUserId() {
+  const session = await getServerSession(auth);
+  if(session){
+    const userId = session.user_id;
+    return userId;
+  }
+  return null;
+}

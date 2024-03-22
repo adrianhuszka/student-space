@@ -112,7 +112,7 @@ const auth: AuthOptions = {
       user: CustomUser;
       account: Account | null;
     }) {
-      account!.user_id = user.id;
+      account!.userId = user.id;
       account!.access_token = user.access_token;
       account!.id_token = user.id_token;
       account!.expires_at = user.expires_at;
@@ -123,6 +123,7 @@ const auth: AuthOptions = {
       const nowTimeStamp = Math.floor(Date.now() / 1000);
 
       if (account) {
+        token.sub = account.userId;
         token.decoded = account.access_token && jwtDecode(account.access_token);
         token.access_token = account.access_token;
         token.id_token = account.id_token;
@@ -152,6 +153,7 @@ const auth: AuthOptions = {
       session: CustomSession;
       token: CustomJWT;
     }) {
+      session.user_id = token.sub;
       session.access_token = encrypt(token.access_token);
       session.id_token = encrypt(token.id_token);
       session.roles = token.decoded?.realm_access?.roles;

@@ -5,13 +5,14 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import CardElement from "./card-elements";
+import { getJoindGroups } from "@/app/actions/user-actions";
 
 export const Home = async () => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["groups"],
-    queryFn: () => list({ search: "", page: 0, size: 10 }),
+    queryKey: ["user-groups"],
+    queryFn: getJoindGroups,
   });
 
   return (
