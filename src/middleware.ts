@@ -15,9 +15,6 @@ const intlMiddleware = createIntlMiddleware({
 });
 
 const authMiddleware = withAuth(
-  // Note that this callback is only invoked if
-  // the `authorized` callback has returned `true`
-  // and not for pages listed in `pages`.
   (req) => intlMiddleware(req),
   {
     callbacks: {
@@ -72,16 +69,17 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/forbidden", req.nextUrl));
   }
 
-  if (req.nextUrl.pathname.endsWith("/login") && isAuthenticated) {
+  if (req.nextUrl.pathname.endsWith("/login") && isAuthenticated)
     return NextResponse.redirect(new URL("/", req.url));
-  } else if (isPublicPage) {
+  if (isPublicPage)
     return intlMiddleware(req);
-  } else if (req.nextUrl.pathname === "/") {
+
+  if (req.nextUrl.pathname === "/") {
     req.nextUrl.pathname = "/home";
     return NextResponse.redirect(req.nextUrl);
-  } else {
-    return (authMiddleware as any)(req);
   }
+  
+  return (authMiddleware as any)(req);
 }
 
 export const config = {
