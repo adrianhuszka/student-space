@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import auth from "@/auth";
 import { decrypt } from "./encription";
+import { CustomSession } from "@/types";
 
 export async function getAccessToken() {
   const session = await getServerSession(auth);
@@ -22,8 +23,8 @@ export async function getIdToken() {
 
 export async function getUserId() {
   const session = await getServerSession(auth);
-  if(session){
-    const userId = session.user_id;
+  if (session) {
+    const userId = (session as CustomSession).user_id;
     return userId;
   }
   return null;

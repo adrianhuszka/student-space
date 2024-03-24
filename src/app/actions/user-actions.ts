@@ -101,12 +101,12 @@ export async function remove(groupId: string) {
   };
 }
 
-export async function getJoindGroups() {
+export async function getJoinedScenes() {
   const token = await getAccessToken();
   const userId = await getUserId();
 
   const response = await fetch(
-    `${process.env.BACKEND_URL}/api/v1/user/${userId}`,
+    `${process.env.BACKEND_URL}/api/v1/scenes/${userId}`,
     {
       method: "GET",
       headers: {

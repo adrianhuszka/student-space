@@ -11,7 +11,7 @@ import {
 import { Input } from "@nextui-org/input";
 import { FormEvent, useEffect, useMemo } from "react";
 import { Select, SelectItem } from "@nextui-org/select";
-import { Group } from "../../table/group/data";
+import { Group } from "../../../../../types/group-types";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
 import { create } from "@/app/actions/group-actions";

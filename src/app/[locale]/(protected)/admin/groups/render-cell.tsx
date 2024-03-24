@@ -3,7 +3,7 @@ import { EditIcon } from "@/components/icons/table/edit-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { Tooltip } from "@nextui-org/tooltip";
-import { Group } from "./data";
+import { Group } from "../../../../../types/group-types";
 import React from "react";
 import { Button } from "@nextui-org/button";
 import { remove } from "@/app/actions/group-actions";

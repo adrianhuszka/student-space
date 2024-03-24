@@ -11,7 +11,7 @@ import {
   SortDescriptor,
 } from "@nextui-org/table";
 import { Button } from "@nextui-org/button";
-import { columns, User, statusOptions } from "./data";
+import { columns, User, statusOptions } from "../../../../../types/user-types";
 import { ChevronDownIcon } from "@/components/icons/cherron-dropdown";
 import { PlusIcon } from "@/components/icons/plus";
 import { SearchIcon } from "@/components/icons/searchicon";
@@ -28,10 +28,10 @@ import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useDisclosure } from "@nextui-org/modal";
-import { AddUser } from "@/components/pages/accounts/add-user-modal";
+import { AddUser } from "@/app/[locale]/(protected)/admin/accounts/add-user-modal";
 import { useGetUsers } from "@/data/get-users";
 import { toast } from "react-toastify";
-import { useDebounce } from "@/hooks/debounce";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const INITIAL_VISIBLE_COLUMNS = [
   "name",

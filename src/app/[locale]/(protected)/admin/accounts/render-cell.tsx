@@ -4,7 +4,7 @@ import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { Tooltip } from "@nextui-org/tooltip";
 import { User } from "@nextui-org/user";
-import { User as UserType } from "./data";
+import { User as UserType } from "../../../../../types/user-types";
 import React from "react";
 import { Button } from "@nextui-org/button";
 

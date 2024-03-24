@@ -11,7 +11,7 @@ import {
   SortDescriptor,
 } from "@nextui-org/table";
 import { Button } from "@nextui-org/button";
-import { columns, Group } from "./data";
+import { columns, Group } from "../../../../../types/group-types";
 import { ChevronDownIcon } from "@/components/icons/cherron-dropdown";
 import { PlusIcon } from "@/components/icons/plus";
 import { SearchIcon } from "@/components/icons/searchicon";
@@ -26,12 +26,12 @@ import {
 import { Input } from "@nextui-org/input";
 import RenderCell from "./render-cell";
 import { Select, SelectItem } from "@nextui-org/select";
-import { AddGroup } from "@/components/pages/groups/add-group-modal";
+import { AddGroup } from "@/app/[locale]/(protected)/admin/groups/add-group-modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { useGetGroups } from "@/data/get-groups";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useDebounce } from "@/hooks/debounce";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "realmRoles", "path", "actions"];
 

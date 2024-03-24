@@ -18,3 +18,10 @@ bun dev
 ```
 
 Nyisd meg [http://localhost:3000](http://localhost:3000) böngészőben.
+
+## Build
+
+- `npm run build` parancs
+- mappák másolása
+  - `public`-> `.next/standalone`
+  - `.next/static` -> `.next/standalone/static`
