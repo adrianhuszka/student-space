@@ -18,19 +18,11 @@ export const siteConfig: SiteConfig = {
       label: "home",
       href: "/home",
     },
-    {
-      label: "forum",
-      href: "/forum",
-    },
   ],
   navMenuItems: [
     {
       label: "home",
       href: "/home",
-    },
-    {
-      label: "forum",
-      href: "/forum",
     },
   ],
 };

@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
-import { Folder, Note, TaskSquare, TextBlock, TickSquare } from "iconic-react";
+import NextLink from "next/link";
 import { Tooltip } from "@nextui-org/tooltip";
 import { Button } from "@nextui-org/button";
 import { Badge } from "@nextui-org/badge";
@@ -42,11 +42,12 @@ export default function CardElement({ ...props }: Scene) {
               className="capitalize"
             >
               <Button
+                as={NextLink}
                 isIconOnly
                 color={item.color}
                 aria-label={item.name}
                 variant="light"
-                onClick={() => navigate.push(`/${item.name}/${item.id}`)}
+                href={`/${item.name}/${item.id}`}
               >
                 {item.icon}
               </Button>
