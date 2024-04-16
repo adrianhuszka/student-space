@@ -1,4 +1,3 @@
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import SceneList from "./list";
 
 export default function Scene({ params }: { params: { id: string } }) {
