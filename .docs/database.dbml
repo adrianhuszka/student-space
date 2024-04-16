@@ -1,0 +1,263 @@
+// Default keycloak schemas
+
+Table user_entity {
+  id uuid [pk, not null]
+  email varchar(255) [not null]
+  email_constraint varchar(255) [not null]
+  email_verified boolean [not null, default: false]
+  enabled boolean [not null, default: true]
+  federation_link varchar(255)
+  first_name varchar(255)
+  last_name varchar(255)
+  realm_id varchar(255)
+  username varchar(255)
+  created_timestamp bigint
+  service_account_client_link varchar(255)
+  not_before integer [not null, default: 0]
+}
+
+Table credential {
+  id uuid [pk, not null]
+  salt bytea
+  type varchar(255) [not null]
+  user_id uuid [not null, ref: > user_entity.id]
+  created_date bigint
+  user_label varchar(255)
+  secret_data text
+  credential_data text
+  priority integer
+}
+
+Table user_session {
+  id uuid [pk, not null]
+  auth_method varchar(255)
+  ip_address varchar(255)
+  last_session_refresh integer
+  login_username varchar(255)
+  realm_id varchar(255)
+  remember_me boolean [not null, default: false]
+  started integer
+  user_id uuid [not null, ref: > user_entity.id]
+  user_session_state integer
+  broker_session_id varchar(255)
+  broker_user_id varchar(255)
+}
+
+Table keycloak_role {
+  id uuid [pk, not null]
+  client_realm_constraint varchar(255)
+  client_role boolean [not null, default: false]
+  description varchar(255)
+  name varchar(255) [not null]
+  realm_id uuid [not null]
+  client uuid [not null]
+  realm uuid
+}
+
+Table user_role_mapping {
+  user_id uuid [pk, not null, ref: > user_entity.id]
+  role_id uuid [pk, not null, ref: > keycloak_role.id]
+}
+
+Table keycloak_group {
+  id uuid [pk, not null]
+  name varchar(255) [not null]
+  parent_group uuid [ref: > keycloak_group.id]
+  realm_id uuid [not null]
+}
+
+Table user_group_membership {
+  user_id uuid [pk, not null, ref: > user_entity.id]
+  group_id uuid [pk, not null, ref: > keycloak_group.id]
+}
+
+Table group_role_mapping {
+  role_id uuid [pk, not null, ref: > keycloak_role.id]
+  group_id uuid [pk, not null, ref: > keycloak_group.id]
+}
+
+// Group management schemas
+
+Table subject_group {
+  id uuid [pk, not null]
+  name varchar(255) [not null]
+  description varchar(255)
+  archived boolean [not null, default: false]
+  deleted boolean [not null, default: false]
+  parent_group uuid [ref: > subject_group.id]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  archived_at timestamp
+  deleted_at timestamp
+}
+
+Table subject_group_keycloak_group_mapping {
+  subject_group_id uuid [pk, not null, ref: > subject_group.id]
+  keycloak_group_id uuid [pk, not null, ref: > keycloak_group.id]
+  role integer [not null]
+}
+
+Table subject_group_user_membership {
+  subject_group_id uuid [pk, not null, ref: > subject_group.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+  role integer [not null]
+}
+
+// News schemas
+
+Table news {
+  id uuid [pk, not null]
+  subject_group_id uuid [not null, ref: > subject_group.id]
+  name varchar(255) [not null]
+  description varchar(255)
+}
+
+Table news_message {
+  id uuid [pk, not null]
+  news_id uuid [not null, ref: > news.id]
+  user_id uuid [not null, ref: > user_entity.id]
+  message text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table news_message_like {
+  news_message_id uuid [pk, not null, ref: > news_message.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+}
+
+Table news_message_seen {
+  news_message_id uuid [pk, not null, ref: > news_message.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+}
+
+// Forum schemas
+
+Table forum {
+  id uuid [pk, not null]
+  subject_group_id uuid [not null, ref: > subject_group.id]
+  name varchar(255) [not null]
+  description varchar(255)
+}
+
+Table forum_message {
+  id uuid [pk, not null]
+  forum_id uuid [not null, ref: > forum.id]
+  user_id uuid [not null, ref: > user_entity.id]
+  message text [not null]
+  reply_to uuid [ref: > forum_message.id]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table forum_message_like {
+  forum_message_id uuid [pk, not null, ref: > forum_message.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+}
+
+Table forum_message_seen {
+  forum_message_id uuid [pk, not null, ref: > forum_message.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+}
+
+// Task schemas
+
+Table task {
+  id uuid [pk, not null]
+  subject_group_id uuid [not null, ref: > subject_group.id]
+  name varchar(255) [not null]
+  description varchar(255)
+  due_date timestamp
+  completed boolean [not null, default: false]
+}
+
+Table task_user_assignment {
+  task_id uuid [pk, not null, ref: > task.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+}
+
+Table task_handed_in {
+  task_id uuid [pk, not null, ref: > task.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+  message text
+  file_path varchar(255)
+  handed_in_at timestamp
+}
+
+// Document schemas
+
+Table documents {
+  id uuid [pk, not null]
+  subject_group_id uuid [not null, ref: > subject_group.id]
+  name varchar(255) [not null]
+  description varchar(255)
+}
+
+Table document_files {
+  id uuid [pk, not null]
+  document_id uuid [not null, ref: > documents.id]
+  file_path varchar(255) [not null]
+  uploaded_by uuid [not null, ref: > user_entity.id]
+  uploaded_at timestamp [not null]
+}
+
+// Test schemas
+
+Table test {
+  id uuid [pk, not null]
+  subject_group_id uuid [not null, ref: > subject_group.id]
+  name varchar(255) [not null]
+  description varchar(255)
+  start_date timestamp
+  due_date timestamp
+  time_limit time
+  max_point integer
+}
+
+Table test_handed_in {
+  test_id uuid [pk, not null, ref: > test.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+  handed_in_at timestamp
+  time_spent time
+  point integer
+}
+
+Table test_question {
+  id uuid [pk, not null]
+  test_id uuid [not null, ref: > test.id]
+  question text [not null]
+  question_type integer [not null] // 0: Multiple choice, 1: Single choice, 2: Essay, 3: True/False, 4: Fill in the blank, 5: Matching
+  point integer
+}
+
+Table test_question_answer {
+  id uuid [pk, not null]
+  test_question_id uuid [not null, ref: > test_question.id]
+  answer text [not null]
+  correct boolean [not null, default: false]
+}
+
+// Private message schemas
+
+Table private_message {
+  id uuid [pk, not null]
+  sender_id uuid [not null, ref: > user_entity.id]
+  receiver_id uuid [not null, ref: > user_entity.id]
+  message text [not null]
+  created_at timestamp [not null]
+}
+
+Table private_message_seen {
+  private_message_id uuid [pk, not null, ref: > private_message.id]
+  user_id uuid [pk, not null, ref: > user_entity.id]
+}
+
+// Notification schemas
+
+Table notification {
+  id uuid [pk, not null]
+  user_id uuid [not null, ref: > user_entity.id]
+  message text [not null]
+  created_at timestamp [not null]
+  seen boolean [not null, default: false]
+}
