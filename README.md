@@ -25,3 +25,7 @@ Nyisd meg [http://localhost:3000](http://localhost:3000) böngészőben.
 - mappák másolása
   - `public`-> `.next/standalone`
   - `.next/static` -> `.next/standalone/static`
+
+## DB schema
+
+[link](https://dbdiagram.io/d/Szakdoga-661e204003593b6b6117139f)
