@@ -1,5 +1,5 @@
 import { Home } from "@/app/[locale]/(protected)/home";
-import { getJoinedScenes } from "@/app/actions/user-actions";
+import { list } from "@/app/actions/scene-actions";
 import {
   dehydrate,
   HydrationBoundary,
@@ -10,8 +10,8 @@ export default async function HomePage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["user-scenes"],
-    queryFn: getJoinedScenes,
+    queryKey: ["scenes"],
+    queryFn: list,
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

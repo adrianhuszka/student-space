@@ -100,26 +100,3 @@ export async function remove(groupId: string) {
     status: response.status,
   };
 }
-
-export async function getJoinedScenes() {
-  const token = await getAccessToken();
-  const userId = await getUserId();
-
-  const response = await fetch(
-    `${process.env.BACKEND_URL}/api/v1/scenes/${userId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch user groups");
-  }
-
-  const result = await response.json();
-  return result;
-}

@@ -1,56 +1,38 @@
-"use client";
-
+import { create } from "@/app/actions/scene-actions";
 import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
 import {
   Modal,
-  ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@nextui-org/modal";
-import { Input } from "@nextui-org/input";
 import { useEffect, useMemo } from "react";
-import { Select, SelectItem } from "@nextui-org/select";
-import { Group } from "../../../../../types/group-types";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
-import { create } from "@/app/actions/group-actions";
 
-export const AddGroup = ({
+export const AddNewSceneModal = ({
   isOpen,
   onOpenChange,
-  groups,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  groups: Group[];
 }) => {
-  const items: { id: string; name: string }[] = groups.map((group) => ({
-    id: group.id,
-    name: group.name,
-  }));
-
   const initialState = {
-    status: NaN,
+    name: "",
+    description: "",
   };
-
-  items.unshift({ id: "none", name: "None" });
 
   const [state, formAction] = useFormState(create, initialState);
 
   useEffect(() => {
-    if (state.status)
-      switch (state.status) {
-        case 201:
-          toast.success("Successfully added group!");
-          break;
-        case 409:
-          toast.error("Group already exists!");
-          break;
-        default:
-          toast.error("Failed to add group!");
-          break;
-      }
+    if (state.status === 201) {
+      toast.success("Scene added successfully");
+      onOpenChange(false);
+    } else if (state.status && state.status !== 201) {
+      toast.error("Failed to add scene");
+    }
   }, [state]);
 
   const modal = useMemo(() => {
@@ -85,7 +67,7 @@ export const AddGroup = ({
           {(onClose) => (
             <form action={formAction}>
               <ModalHeader className="flex flex-col gap-1">
-                Add Group
+                Add Scene
               </ModalHeader>
               <ModalBody>
                 <Input
@@ -95,20 +77,13 @@ export const AddGroup = ({
                   variant="bordered"
                   name="name"
                 />
-                <Select
-                  label="Parent Group"
-                  labelPlacement="outside-left"
-                  size="md"
-                  className="bg-transparent outline-none text-default-400 text-small"
-                  name="parentGroup"
-                  items={items}
-                >
-                  {(item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.name}
-                    </SelectItem>
-                  )}
-                </Select>
+                <Input
+                  autoFocus
+                  required
+                  label="Description"
+                  variant="bordered"
+                  name="description"
+                />
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -128,7 +103,7 @@ export const AddGroup = ({
         </ModalContent>
       </Modal>
     );
-  }, [formAction, isOpen, items, onOpenChange]);
+  }, [formAction, isOpen, onOpenChange]);
 
   return modal;
 };

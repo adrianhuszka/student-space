@@ -1,16 +1,21 @@
 "use client";
 
 import CardElement from "./card-elements";
-import { useGetScenes } from "@/data/get-user-scenes";
+import { useListScenes } from "@/data/get-scenes";
 import { useMemo } from "react";
 import { Scene } from "@/types";
 import { Folder, Note, TaskSquare, TextBlock, TickSquare } from "iconic-react";
+import { Button } from "@nextui-org/button";
+import { PlusIcon } from "@/components/icons/plus";
+import { useDisclosure } from "@nextui-org/modal";
+import { AddNewSceneModal } from "./add-new-scene";
 
 export const Home = () => {
-  const { data, error, fetchStatus, refetch } = useGetScenes();
+  const { data, error, fetchStatus, refetch } = useListScenes();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const scenes: Scene[] = useMemo(() => {
-    if (data && data.length > 0) {
+    if (data) {
       return data;
     }
     return [
@@ -62,13 +67,21 @@ export const Home = () => {
   }, [data]);
 
   return (
-    <div className="my-14 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
-      <h3 className="text-xl font-semibold">Színterek</h3>
-      <div className="max-w-[60rem] mx-auto w-full px-1 md:px-0 flex flex-col flex-1 gap-3">
-        {scenes.map((scene: Scene) => (
-          <CardElement key={scene.id} {...scene} />
-        ))}
+    <>
+      <div className="my-14 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
+        <div className="flex p-4">
+          <h3 className="text-xl font-semibold flex-grow">Színterek</h3>
+          <Button onClick={onOpen} endContent={<PlusIcon />}>
+            Add New
+          </Button>
+        </div>
+        <div className="max-w-[60rem] mx-auto w-full px-1 md:px-0 flex flex-col flex-1 gap-3">
+          {scenes.map((scene: Scene) => (
+            <CardElement key={scene.id} {...scene} />
+          ))}
+        </div>
       </div>
-    </div>
+      <AddNewSceneModal isOpen={isOpen} onOpenChange={onOpenChange} />
+    </>
   );
 };

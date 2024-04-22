@@ -28,32 +28,33 @@ export default function CardElement({ ...props }: Scene) {
       </CardBody>
       <Divider />
       <CardFooter className="flex justify-end flex-wrap pe-10 gap-2">
-        {props.items.map((item) => (
-          <Badge
-            key={item.id}
-            color={item.color}
-            content={item.unread}
-            isInvisible={item.unread === 0}
-            placement="bottom-right"
-          >
-            <Tooltip
-              content={item.name}
+        {props.items &&
+          props.items.map((item) => (
+            <Badge
+              key={item.id}
               color={item.color}
-              className="capitalize"
+              content={item.unread}
+              isInvisible={item.unread === 0}
+              placement="bottom-right"
             >
-              <Button
-                as={NextLink}
-                isIconOnly
+              <Tooltip
+                content={item.name}
                 color={item.color}
-                aria-label={item.name}
-                variant="light"
-                href={`/${item.name}/${item.id}`}
+                className="capitalize"
               >
-                {item.icon}
-              </Button>
-            </Tooltip>
-          </Badge>
-        ))}
+                <Button
+                  as={NextLink}
+                  isIconOnly
+                  color={item.color}
+                  aria-label={item.name}
+                  variant="light"
+                  href={`/${item.name}/${item.id}`}
+                >
+                  {item.icon}
+                </Button>
+              </Tooltip>
+            </Badge>
+          ))}
       </CardFooter>
     </Card>
   );

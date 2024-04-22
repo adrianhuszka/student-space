@@ -36,12 +36,12 @@ export type SceneElement = {
 };
 
 export type Scene = {
-  id: string;
+  id?: string;
   name: string;
-  code: string;
-  description: string;
+  code?: string;
+  description?: string;
   image?: string;
-  items: SceneElement[];
-  createdAt: string;
+  items?: SceneElement[];
+  createdAt?: string;
   updatedAt?: string;
 };
