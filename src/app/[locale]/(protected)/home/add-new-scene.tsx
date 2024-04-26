@@ -22,6 +22,7 @@ export const AddNewSceneModal = ({
   const initialState = {
     name: "",
     description: "",
+    status: 0,
   };
 
   const [state, formAction] = useFormState(create, initialState);
