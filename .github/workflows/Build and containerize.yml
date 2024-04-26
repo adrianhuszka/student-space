@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: "18"
-  PORT: ${{ vars.PORT_DEV }}
-  NEXT_PUBLIC_BACKEND_URL: ${{ vars.NEXT_PUBLIC_BACKEND_URL }}
+  NODE_VERSION: "20"
+  PORT: 8080
+  NEXT_PUBLIC_BACKEND_URL: http://138.3.248.186:8080
 
 jobs:
   build:
@@ -27,9 +27,9 @@ jobs:
       - name: Log in to registry
         uses: docker/login-action@v2
         with:
-          registry: https://scoopdevcontainerregistry.azurecr.io/
-          username: ${{ secrets.AzureAppService_ContainerUsername_7bb27a47a29b4c55a0946cf147f2b74a }}
-          password: ${{ secrets.AzureAppService_ContainerPassword_487e2a7c48c1428d9aee7922945def04 }}
+          registry: https://docker.pkg.github.com/adrianhuszka/student-space/frontend
+          username: adrianhuszka
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v5
@@ -37,9 +37,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            scoopdevcontainerregistry.azurecr.io/feedback:${{ github.sha }}
-            scoopdevcontainerregistry.azurecr.io/feedback:latest
           file: ./Dockerfile
           build-args: |
             PORT=${{ env.PORT }}
