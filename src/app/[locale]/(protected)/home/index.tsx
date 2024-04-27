@@ -2,8 +2,8 @@
 
 import CardElement from "./card-elements";
 import { useListScenes } from "@/data/get-scenes";
-import { useMemo } from "react";
-import { Scene } from "@/types";
+import { ReactNode, useMemo } from "react";
+import { getColorForType, Scene, SceneElement } from "@/types";
 import { Folder, Note, TaskSquare, TextBlock, TickSquare } from "iconic-react";
 import { Button } from "@nextui-org/button";
 import { PlusIcon } from "@/components/icons/plus";
@@ -16,6 +16,7 @@ export const Home = () => {
 
   const scenes: Scene[] = useMemo(() => {
     if (data) {
+      console.log(data);
       return data;
     }
     return [
@@ -31,35 +32,35 @@ export const Home = () => {
             name: "news",
             icon: <Note size="32" fill="#979797" />,
             color: "primary",
-            unread: 1,
+            unreadCount: 1,
           },
           {
             id: "2",
             name: "forum",
             icon: <TextBlock size="32" fill="#979797" />,
             color: "success",
-            unread: 0,
+            unreadCount: 0,
           },
           {
             id: "3",
             name: "test",
             icon: <TickSquare size="32" fill="#979797" />,
             color: "danger",
-            unread: 10,
+            unreadCount: 10,
           },
           {
             id: "55",
             name: "task",
             icon: <TaskSquare size="32" fill="#979797" />,
             color: "warning",
-            unread: 168,
+            unreadCount: 168,
           },
           {
             id: "4",
             name: "document",
             icon: <Folder size="32" fill="#979797" />,
             color: "secondary",
-            unread: 0,
+            unreadCount: 0,
           },
         ],
       },

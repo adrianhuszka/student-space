@@ -1,3 +1,4 @@
+import { Folder, Note, TaskSquare, TextBlock, TickSquare } from "iconic-react";
 import { Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { ReactNode, SVGProps } from "react";
@@ -20,10 +21,29 @@ export type CustomUser = User & {
   [key: string]: any;
 };
 
+export const getColorForType = (
+  type: SceneElement["type"]
+): SceneElement["color"] => {
+  switch (type) {
+    case "NEWS":
+      return "primary";
+    case "FORUM":
+      return "success";
+    case "TEST":
+      return "danger";
+    case "TASK":
+      return "warning";
+    case "DOCUMENTS":
+      return "secondary";
+    default:
+      return undefined;
+  }
+};
+
 export type SceneElement = {
   id: string;
-  name: "news" | "forum" | "test" | "task" | "document";
-  icon: ReactNode;
+  name: string;
+  type: "NEWS" | "FORUM" | "TEST" | "TASK" | "DOCUMENTS";
   color:
     | "primary"
     | "default"
@@ -32,7 +52,7 @@ export type SceneElement = {
     | "warning"
     | "danger"
     | undefined;
-  unread: number;
+  unreadCount: number;
 };
 
 export type Scene = {
