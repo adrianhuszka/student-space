@@ -8,6 +8,12 @@ jobs:
   build:
     name: Build Docker
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
 
     steps:
       - name: Check out repository code 🛎️
@@ -27,6 +33,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          platforms: ${{ matrix.platform }}
           file: ./Dockerfile
           push: true
           tags: ghcr.io/adrianhuszka/student-space/app:latest
