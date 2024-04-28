@@ -1,23 +1,139 @@
-version: "3.9"
+env_file:
+  - path: ./.env
+    required: true
 
 services:
-  frontend:
-    container_name: frontend
-    image: frontend
-    build:
-      context: ./
-      dockerfile: frontend.dockerfile
-    ports:
-      - "3000:3000"
+  postgres:
+    container_name: postgre-sql
+    image: postgres:15.6
     environment:
-      - NEXT_PUBLIC_API_URL=
-      - BACKEND_URL=
-      - NEXTAUTH_URL=
-      - NEXTAUTH_SECRET=
-      - KEYCLOAK_ISSUER=
-      - KEYCLOAK_TOKEN_URL=
-      - KEYCLOAK_SESSION_END_URL=
-      - KEYCLOAK_REALM=
-      - KEYCLOAK_CLIENT_ID=
-      - KEYCLOAK_CLIENT_SECRET=
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     restart: unless-stopped
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:23.0.7
+    command: ["start-dev", "--import-realm"]
+    restart: unless-stopped
+    environment:
+      KC_DB: ${POSTGRES_DB}
+      KC_DB_URL: jdbc:postgresql://postgres-sql:5432/student-space
+      KC_DB_SCHEMA: keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./realms/:/opt/keycloak/data/import/
+    depends_on:
+      - postgres
+
+  redis:
+    container_name: redis
+    image: redis:7.2.4
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    restart: unless-stopped
+
+  discovery-service:
+    image: ghcr.io/adrianhuszka/student-space-backend/discovery-service:0.1@sha256:62fa952c455531ac6d1cdbbf70746a0a81a611b1ac26d0017b72015b2125bf32
+    container_name: discovery-service
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    depends_on:
+      - redis
+
+  gateway-service:
+    image: ghcr.io/adrianhuszka/student-space-backend/api-gateway:0.1@sha256:e5b91d6fc9706a7f0639790d1b73d59bb2cad297ac51d8d0adaed889b19842a6
+    container_name: gateway-service
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-service
+      - keycloak
+
+  administration-service:
+    image: ghcr.io/adrianhuszka/student-space-backend/administration-service:0.1@sha256:63fa6f054cacf51272275e1fbf27d087456e76dc6ab3d570da0ca84e69812652
+    container_name: administration-service
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_BACKEND_CLIENT_ID}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_BACKEND_CLIENT_SECRET}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+    depends_on:
+      - postgres
+      - keycloak
+      - redis
+      - discovery-service
+      - gateway-service
+
+  scene-service:
+    image: ghcr.io/adrianhuszka/student-space-backend/scene-service:0.1@sha256:925175196c5ae5cdedd44d716fe57f3bd023dba80036a325b1c297b4acef971b
+    container_name: scene-service
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      - postgres
+      - keycloak
+      - redis
+      - discovery-service
+      - gateway-service
+
+  forum-service:
+    image: ghcr.io/adrianhuszka/student-space-backend/forum-service:0.1@sha256:9f3ec86f2e3ae89beed2e6639f15db24f98f106ec04b4d46f496a994987701d3
+    container_name: forum-service
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      - postgres
+      - keycloak
+      - redis
+      - discovery-service
+      - gateway-service
+
+volumes:
+  pgdata:
+  pgadmin:
+  redis:
+    driver: local
