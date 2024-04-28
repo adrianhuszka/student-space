@@ -7,9 +7,9 @@ services:
     container_name: postgre-sql
     image: postgres:15.6
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -22,11 +22,11 @@ services:
     command: ["start-dev", "--import-realm"]
     restart: unless-stopped
     environment:
-      KC_DB: ${POSTGRES_DB}
+      KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres-sql:5432/student-space
       KC_DB_SCHEMA: keycloak
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_DB_USERNAME: ${DB_USERNAME}
+      KC_DB_PASSWORD: ${DB_PASSWORD}
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
@@ -48,7 +48,8 @@ services:
     restart: unless-stopped
 
   discovery-service:
-    image: ghcr.io/adrianhuszka/student-space-backend/discovery-service:0.1@sha256:62fa952c455531ac6d1cdbbf70746a0a81a611b1ac26d0017b72015b2125bf32
+    image: ghcr.io/adrianhuszka/student-space-backend/discovery-service:0.1
+    platform: linux/arm64
     container_name: discovery-service
     pull_policy: always
     restart: unless-stopped
@@ -58,29 +59,31 @@ services:
       - redis
 
   gateway-service:
-    image: ghcr.io/adrianhuszka/student-space-backend/api-gateway:0.1@sha256:e5b91d6fc9706a7f0639790d1b73d59bb2cad297ac51d8d0adaed889b19842a6
+    image: ghcr.io/adrianhuszka/student-space-backend/api-gateway:0.1
+    platform: linux/arm64
     container_name: gateway-service
     pull_policy: always
     restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - discovery-service
       - keycloak
 
   administration-service:
-    image: ghcr.io/adrianhuszka/student-space-backend/administration-service:0.1@sha256:63fa6f054cacf51272275e1fbf27d087456e76dc6ab3d570da0ca84e69812652
+    image: ghcr.io/adrianhuszka/student-space-backend/administration-service:0.1
+    platform: linux/arm64
     container_name: administration-service
     pull_policy: always
     restart: unless-stopped
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - KEYCLOAK_URL=${KEYCLOAK_URL}
-      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_BACKEND_CLIENT_ID}
-      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_BACKEND_CLIENT_SECRET}
-      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_BACKEND_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_BACKEND_CLIENT_SECRET}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
     depends_on:
       - postgres
       - keycloak
@@ -89,20 +92,21 @@ services:
       - gateway-service
 
   scene-service:
-    image: ghcr.io/adrianhuszka/student-space-backend/scene-service:0.1@sha256:925175196c5ae5cdedd44d716fe57f3bd023dba80036a325b1c297b4acef971b
+    image: ghcr.io/adrianhuszka/student-space-backend/scene-service:0.1
+    platform: linux/arm64
     container_name: scene-service
     pull_policy: always
     restart: unless-stopped
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - KEYCLOAK_URL=${KEYCLOAK_URL}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - postgres
       - keycloak
@@ -111,20 +115,21 @@ services:
       - gateway-service
 
   forum-service:
-    image: ghcr.io/adrianhuszka/student-space-backend/forum-service:0.1@sha256:9f3ec86f2e3ae89beed2e6639f15db24f98f106ec04b4d46f496a994987701d3
+    image: ghcr.io/adrianhuszka/student-space-backend/forum-service:0.1
+    platform: linux/arm64
     container_name: forum-service
     pull_policy: always
     restart: unless-stopped
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - KEYCLOAK_URL=${KEYCLOAK_URL}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     depends_on:
       - postgres
       - keycloak
