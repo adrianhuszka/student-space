@@ -30,3 +30,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ghcr.io/adrianhuszka/student-space/app:latest
+
+  triggerUpdate:
+    name: Trigger Update
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Call Webhook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
