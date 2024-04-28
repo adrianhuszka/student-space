@@ -36,24 +36,25 @@ services:
     depends_on:
       - postgres
 
-  # next-frontend:
-  #   container_name: frontend
-  #   image: ghcr.io/adrianhuszka/student-space/app:latest
-  #   pull_policy: always
-  #   restart: unless-stopped
-  #   ports:
-  #     - "80:3000"
-  #   environment:
-  #     BACKEND_URL: http://138.3.248.186:8080
-  #     NEXTAUTH_URL: http://138.3.248.186
-  #     NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-  #     KEYCLOAK_URL: ${KEYCLOAK_URL}
-  #     KEYCLOAK_REALM: ${KEYCLOAK_REALM}
-  #     KEYCLOAK_ISSUER: ${KEYCLOAK_ISSUER}
-  #     KEYCLOAK_TOKEN_URL: ${KEYCLOAK_TOKEN_URL}
-  #     KEYCLOAK_SESSION_END_URL: ${KEYCLOAK_SESSION_END_URL}
-  #     KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
-  #     KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+  next-frontend:
+    container_name: frontend
+    image: ghcr.io/adrianhuszka/student-space/app:latest
+    platform: linux/arm64
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "80:3000"
+    environment:
+      BACKEND_URL: http://138.3.248.186:8080
+      NEXTAUTH_URL: http://138.3.248.186
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_ISSUER: ${KEYCLOAK_ISSUER}
+      KEYCLOAK_TOKEN_URL: ${KEYCLOAK_TOKEN_URL}
+      KEYCLOAK_SESSION_END_URL: ${KEYCLOAK_SESSION_END_URL}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
 
   redis:
     container_name: redis
