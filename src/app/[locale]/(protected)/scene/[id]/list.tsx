@@ -1,6 +1,6 @@
 "use client";
 
-import { Scene, SceneElement } from "@/types";
+import { useGetSceneById } from "@/data/get-scenes";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
@@ -8,17 +8,24 @@ import { Note, TextBlock, TickSquare, TaskSquare, Folder } from "iconic-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
-export default function SceneList({
-  sceneItems,
-}: {
-  sceneItems: SceneElement[] | undefined;
-}) {
+export default function SceneList({ sceneId }: { sceneId: string }) {
+  const { data, error, fetchStatus, refetch } = useGetSceneById(sceneId);
+
   const filteredData = useMemo(() => {
-    if (!sceneItems)
+    if (!data)
       return { news: [], forum: [], tests: [], tasks: [], documents: [] };
 
-    return sceneItems!.reduce(
-      (acc, item) => {
+    return data!.reduce(
+      (
+        acc: {
+          news: any[];
+          forum: any[];
+          tests: any[];
+          tasks: any[];
+          documents: any[];
+        },
+        item: { type: any }
+      ) => {
         switch (item.type) {
           case "NEWS":
             acc.news.push(item);
@@ -40,7 +47,7 @@ export default function SceneList({
       },
       { news: [], forum: [], tests: [], tasks: [], documents: [] } as any
     );
-  }, [sceneItems]);
+  }, [data]);
 
   return (
     <Accordion
