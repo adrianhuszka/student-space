@@ -53,6 +53,9 @@ export type SceneElement = {
     | "danger"
     | undefined;
   unreadCount: number;
+  messageCount: number;
+  lastMessage: string;
+  lastUpdate: Date;
 };
 
 export type Scene = {
