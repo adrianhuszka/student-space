@@ -12,40 +12,44 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
   const { data, error, fetchStatus, refetch } = useGetSceneById(sceneId);
 
   const filteredData = useMemo(() => {
-    if (!data)
+    if (!data && !data.items)
       return { news: [], forum: [], tests: [], tasks: [], documents: [] };
 
-    return data!.reduce(
-      (
-        acc: {
-          news: any[];
-          forum: any[];
-          tests: any[];
-          tasks: any[];
-          documents: any[];
+    return (
+      data &&
+      data.items &&
+      data.items.reduce(
+        (
+          acc: {
+            news: any[];
+            forum: any[];
+            tests: any[];
+            tasks: any[];
+            documents: any[];
+          },
+          item: { type: any }
+        ) => {
+          switch (item.type) {
+            case "NEWS":
+              acc.news.push(item);
+              break;
+            case "FORUM":
+              acc.forum.push(item);
+              break;
+            case "TEST":
+              acc.tests.push(item);
+              break;
+            case "TASK":
+              acc.tasks.push(item);
+              break;
+            case "DOCUMENTS":
+              acc.documents.push(item);
+              break;
+          }
+          return acc;
         },
-        item: { type: any }
-      ) => {
-        switch (item.type) {
-          case "NEWS":
-            acc.news.push(item);
-            break;
-          case "FORUM":
-            acc.forum.push(item);
-            break;
-          case "TEST":
-            acc.tests.push(item);
-            break;
-          case "TASK":
-            acc.tasks.push(item);
-            break;
-          case "DOCUMENTS":
-            acc.documents.push(item);
-            break;
-        }
-        return acc;
-      },
-      { news: [], forum: [], tests: [], tasks: [], documents: [] } as any
+        { news: [], forum: [], tests: [], tasks: [], documents: [] } as any
+      )
     );
   }, [data]);
 
@@ -83,7 +87,7 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
             href={`/news/${item.id}`}
           >
             &emsp; <Note size="32" fill="#979797" color="hsl(212 100% 47%)" />
-            <h2>{item.title}</h2>
+            <h2>{item.name}</h2>
             <div className="flex-grow text-ellipsis">
               <p>{item.lastMessage}</p>
             </div>
@@ -120,8 +124,8 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
           >
             &emsp;
             <TextBlock size="32" fill="#979797" color="hsl(146 79% 44%)" />
-            <h2>{item.title}</h2>
-            <div className="flex-grow text-ellipsis">
+            <h2>{item.name}</h2>
+            <div className="flex-grow text-ellipsis pe-[8.5rem]">
               <p>{item.lastMessage}</p>
             </div>
             <h5>{item.lastUpdate} | </h5>
@@ -157,7 +161,7 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
           >
             &emsp;
             <TickSquare size="32" fill="#979797" color="hsl(339 90% 51%)" />
-            <h2>{item.title}</h2>
+            <h2>{item.name}</h2>
             <div className="flex-grow text-ellipsis">
               <p>{item.lastMessage}</p>
             </div>
@@ -194,7 +198,7 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
           >
             &emsp;
             <TaskSquare size="32" fill="#979797" color="hsl(37 91% 55%)" />
-            <h2>{item.title}</h2>
+            <h2>{item.name}</h2>
             <div className="flex-grow text-ellipsis">
               <p>{item.lastMessage}</p>
             </div>
@@ -223,7 +227,7 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
           >
             &emsp;
             <Folder size="32" fill="#979797" color="hsl(270 59% 58%)" />
-            {item.title}
+            {item.name}
           </Button>
         ))}
       </AccordionItem>
