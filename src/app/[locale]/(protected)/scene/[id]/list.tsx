@@ -12,7 +12,7 @@ export default function SceneList({ sceneId }: { sceneId: string }) {
   const { data, error, fetchStatus, refetch } = useGetSceneById(sceneId);
 
   const filteredData = useMemo(() => {
-    if (!data && !data.items)
+    if (!data || !data.items)
       return { news: [], forum: [], tests: [], tasks: [], documents: [] };
 
     return (

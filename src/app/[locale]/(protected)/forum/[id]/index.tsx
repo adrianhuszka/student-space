@@ -1,19 +1,23 @@
-import { getById } from "@/app/actions/forum-actions";
-import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
+"use client";
 
-export const Forum = async (id: string) => {
-    const queryClient = new QueryClient();
+import { useGetForumMessages } from "@/data/get-forum";
+import { useMemo } from "react";
 
-    await queryClient.prefetchQuery({
-      queryKey: ["forum"],
-      queryFn: () => getById({ id }),
-    });
+export const ForumIndex = ({ id }: { id: string }) => {
+  const { data, error, fetchStatus, refetch } = useGetForumMessages({
+    forumId: id,
+    page: 0,
+    size: 100,
+    sort: "createdAt",
+    direction: "ASC",
+  });
 
-    return (
-        <>
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <div>Test</div>
-        </HydrationBoundary>
-        </>
-    )
-}
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    return data;
+  }, [data]);
+
+  console.log(filteredData);
+
+  return <>{id}</>;
+};

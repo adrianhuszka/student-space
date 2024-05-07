@@ -11,8 +11,8 @@ export type SiteConfig = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: "StudentSpace",
-  description: "site-description",
+  name: "Student-Space",
+  description: "Oktatási platform",
   navItems: [
     {
       label: "home",

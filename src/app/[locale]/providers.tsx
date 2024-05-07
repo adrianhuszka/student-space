@@ -33,21 +33,19 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   return (
     <NextUIProvider navigate={router.push}>
-      <SessionProvider>
-        <NextThemesProvider {...themeProps}>
+      <NextThemesProvider {...themeProps}>
+        <QueryClientProvider client={queryClient}>
           <ToastContainer />
-          <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
-            {children}
-          </QueryClientProvider>
+          <ReactQueryDevtools />
           <Next13ProgressBar
             height="4px"
             color="#0A2FFF"
             options={{ showSpinner: false }}
             showOnShallow
           />
-        </NextThemesProvider>
-      </SessionProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </QueryClientProvider>
+      </NextThemesProvider>
     </NextUIProvider>
   );
 }

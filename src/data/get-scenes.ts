@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 export function useListScenes() {
   return useQuery({
     queryFn: async () => list(),
-    queryKey: ["scenes"],
+    queryKey: ["scenes-list"],
   });
 }
 
 export function useGetSceneById(id: string) {
   return useQuery({
     queryFn: async () => getById(id),
-    queryKey: ["scenes"],
+    queryKey: ["scenes-get", id],
   });
 }

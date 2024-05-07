@@ -10,7 +10,7 @@ export default async function HomePage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["scenes"],
+    queryKey: ["scenes-list"],
     queryFn: list,
   });
   return (

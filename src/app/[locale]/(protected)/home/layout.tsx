@@ -1,5 +1,3 @@
-import Calendar from "@/components/calendar/Calendar";
-
 export default function HomeLayout({
   children,
 }: {

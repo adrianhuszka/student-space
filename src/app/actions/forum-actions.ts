@@ -1,30 +1,59 @@
 "use server";
 
 import { getAccessToken } from "@/utils/sessionTokenAccessor";
-import { revalidatePath } from "next/cache";
 
-export async function getById({
-    id
-  }: {
-    id: string
-  }) {
-    const token = await getAccessToken();
+export async function getById({ id }: { id: string }) {
+  const token = await getAccessToken();
 
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/v1/forum/get/${id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.status !== 200) {
-        console.error(await response.json());
-        throw new Error("Failed to fetch forum with this id");
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/forum/get/${id}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     }
-    
-    const result = await response.json();
-    return result;
+  );
+
+  if (response.status !== 200) {
+    console.error(await response.json());
+    throw new Error("Failed to fetch forum with this id");
+  }
+
+  const result = await response.json();
+  return result;
+}
+
+export async function getMessages({
+  forumId,
+  page,
+  size,
+  sort,
+  direction,
+}: {
+  forumId: string;
+  page: number;
+  size: number;
+  sort?: string;
+  direction?: string;
+}) {
+  const token = await getAccessToken();
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/forum/messages?forumId=${forumId}&page=${page}&size=${size}&sort=${sort}&direction=${direction}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (response.status !== 200) {
+    console.error(await response.json());
+    throw new Error("Failed to fetch messages for this forum");
+  }
+
+  const result = await response.json();
+  return result;
 }

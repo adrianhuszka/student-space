@@ -11,7 +11,7 @@ export default async function Scene({ params }: { params: { id: string } }) {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["scenes"],
+    queryKey: ["scenes-get", { id: params.id }],
     queryFn: () => getById(params.id),
   });
 
