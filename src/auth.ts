@@ -123,6 +123,7 @@ const auth: AuthOptions = {
       const nowTimeStamp = Math.floor(Date.now() / 1000);
 
       if (account) {
+        console.log("account", account);
         token.sub = account.userId;
         token.decoded = account.access_token && jwtDecode(account.access_token);
         token.access_token = account.access_token;

@@ -70,7 +70,7 @@ export default function CardElement({ ...props }: Scene) {
                   color={getColorForType(item.type)}
                   aria-label={item.name}
                   variant="light"
-                  href={`/${item.name}/${item.id}`}
+                  href={`/${item.type.toLocaleLowerCase()}/${item.id}`}
                 >
                   {getIconForType(item.type)}
                 </Button>

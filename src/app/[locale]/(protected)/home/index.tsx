@@ -20,50 +20,50 @@ export const Home = () => {
       return data;
     }
     return [
-      {
-        id: "1",
-        name: "Programozás I",
-        code: "Prog-I-inf3",
-        description: "Programozás I. tárgy színtere",
-        image: "/images/news.jpg",
-        items: [
-          {
-            id: "1",
-            name: "news",
-            icon: <Note size="32" fill="#979797" />,
-            color: "primary",
-            unreadCount: 1,
-          },
-          {
-            id: "2",
-            name: "forum",
-            icon: <TextBlock size="32" fill="#979797" />,
-            color: "success",
-            unreadCount: 0,
-          },
-          {
-            id: "3",
-            name: "test",
-            icon: <TickSquare size="32" fill="#979797" />,
-            color: "danger",
-            unreadCount: 10,
-          },
-          {
-            id: "55",
-            name: "task",
-            icon: <TaskSquare size="32" fill="#979797" />,
-            color: "warning",
-            unreadCount: 168,
-          },
-          {
-            id: "4",
-            name: "document",
-            icon: <Folder size="32" fill="#979797" />,
-            color: "secondary",
-            unreadCount: 0,
-          },
-        ],
-      },
+      // {
+      //   id: "1",
+      //   name: "Programozás I",
+      //   code: "Prog-I-inf3",
+      //   description: "Programozás I. tárgy színtere",
+      //   image: "/images/news.jpg",
+      //   items: [
+      //     {
+      //       id: "1",
+      //       name: "news",
+      //       icon: <Note size="32" fill="#979797" />,
+      //       color: "primary",
+      //       unreadCount: 1,
+      //     },
+      //     {
+      //       id: "2",
+      //       name: "forum",
+      //       icon: <TextBlock size="32" fill="#979797" />,
+      //       color: "success",
+      //       unreadCount: 0,
+      //     },
+      //     {
+      //       id: "3",
+      //       name: "test",
+      //       icon: <TickSquare size="32" fill="#979797" />,
+      //       color: "danger",
+      //       unreadCount: 10,
+      //     },
+      //     {
+      //       id: "55",
+      //       name: "task",
+      //       icon: <TaskSquare size="32" fill="#979797" />,
+      //       color: "warning",
+      //       unreadCount: 168,
+      //     },
+      //     {
+      //       id: "4",
+      //       name: "document",
+      //       icon: <Folder size="32" fill="#979797" />,
+      //       color: "secondary",
+      //       unreadCount: 0,
+      //     },
+      //   ],
+      // },
     ];
   }, [data]);
 
