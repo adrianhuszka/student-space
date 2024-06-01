@@ -57,3 +57,23 @@ export async function getMessages({
   const result = await response.json();
   return result;
 }
+
+export async function createMessage(formData: FormData) {
+  const forumId = formData.get("forumId") as string;
+  const message = formData.get("message") as string;
+  const token = await getAccessToken();
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/forum/messages`,
+    {
+      method: "POST",
+      body: JSON.stringify({ forumId, message }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.status;
+}

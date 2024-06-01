@@ -15,6 +15,7 @@ import { CustomSession } from "@/types";
 import NextLink from "next/link";
 import { link } from "@nextui-org/theme";
 import { useTranslations } from "next-intl";
+import { useGetProfilePicture } from "@/data/get-users";
 
 export default function UserDropdown({
   sessionData,
@@ -22,6 +23,7 @@ export default function UserDropdown({
   sessionData: CustomSession | undefined;
 }) {
   const translate = useTranslations("nav");
+  const profilePicture = useGetProfilePicture(sessionData?.user_id || "");
 
   async function onLogoutClick() {
     try {
@@ -30,6 +32,7 @@ export default function UserDropdown({
       console.error("Failed to logout:", error);
     }
   }
+
   return (
     <Dropdown>
       <NavbarItem className="flex">
@@ -38,7 +41,7 @@ export default function UserDropdown({
             as="button"
             avatarProps={{
               isBordered: false,
-              src: sessionData?.user?.image,
+              src: profilePicture.data || "",
               showFallback: true,
               name: undefined,
             }}

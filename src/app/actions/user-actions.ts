@@ -100,3 +100,24 @@ export async function remove(groupId: string) {
     status: response.status,
   };
 }
+
+export async function getProfilePicture(userId: string) {
+  const token = await getAccessToken();
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/users/data/getProfileImage?userId=${userId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (response.status !== 200) {
+    return "";
+  }
+
+  return await response.text();
+}

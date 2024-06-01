@@ -5,9 +5,12 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { ForumIndex } from ".";
+import { getUserId } from "@/utils/sessionTokenAccessor";
 
 export default async function Forum({ params }: { params: { id: string } }) {
   const queryClient = new QueryClient();
+
+  const userID = await getUserId();
 
   await queryClient.prefetchQuery({
     queryKey: ["forum-messages", { forumId: params.id }],
@@ -22,7 +25,7 @@ export default async function Forum({ params }: { params: { id: string } }) {
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ForumIndex id={params.id} />
+      <ForumIndex id={params.id} userId={userID} />
     </HydrationBoundary>
   );
 }
