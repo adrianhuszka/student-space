@@ -77,3 +77,68 @@ export async function createMessage(formData: FormData) {
 
   return response.status;
 }
+
+export async function deleteMessage({ id }: { id: string }) {
+  const token = await getAccessToken();
+
+  console.log("Deleting message with id", id);
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/forum/messages/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  console.log(response.status);
+
+  return response.status;
+}
+
+export async function editForumMessage(formData: FormData) {
+  const id = formData.get("id") as string;
+  const message = formData.get("message") as string;
+  const token = await getAccessToken();
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/forum/messages`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ id, message }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.status;
+}
+
+export async function likeMessage({
+  forumMessageId,
+  isLike,
+}: {
+  forumMessageId: string;
+  isLike: boolean;
+}) {
+  const token = await getAccessToken();
+
+  const response = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/forum/message-likes`,
+    {
+      method: "POST",
+      body: JSON.stringify({ forumMessageId, isLike }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.status;
+}
