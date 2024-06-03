@@ -214,3 +214,5 @@ sketch
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/java,nextjs,react,dotenv,visualstudiocode,intellij
+
+package-lock.json
