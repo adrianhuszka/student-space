@@ -20,6 +20,7 @@ export const ForumIndex = ({ id, userId }: { id: string; userId: string }) => {
   });
   const [initialScroll, setInitialScroll] = useState(true);
   const [lastMessageDate, setLastMessageDate] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<any>(null);
 
   const lastMsg = useRef<HTMLDivElement | null>(null);
 
@@ -57,6 +58,11 @@ export const ForumIndex = ({ id, userId }: { id: string; userId: string }) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     formData.set("forumId", id);
+
+    if (replyingTo) {
+      formData.set("answerToId", replyingTo.id);
+    }
+
     const res = await createMessage(formData);
     if (res === 200) {
       toast.success("Message sent successfully");
@@ -84,7 +90,13 @@ export const ForumIndex = ({ id, userId }: { id: string; userId: string }) => {
           )}
         >
           {filteredData.content.map((message: any) => (
-            <Message key={message.id} message={message} userId={userId} />
+            <Message
+              key={message.id}
+              message={message}
+              userId={userId}
+              replyingTo={replyingTo}
+              setReplyingTo={setReplyingTo}
+            />
           ))}
           <div ref={lastMsg} className="min-h-[10px]"></div>
         </div>
@@ -101,7 +113,16 @@ export const ForumIndex = ({ id, userId }: { id: string; userId: string }) => {
         </div>
       </div>
       <form className="flex flex-row gap-2" onSubmit={handleCreateMessage}>
-        <Textarea type="text" className="h-15" name="message" />
+        <Textarea
+          type="text"
+          className="h-15"
+          name="message"
+          label={
+            replyingTo && replyingTo.message.length > 100
+              ? replyingTo.message.slice(0, 100) + "..."
+              : replyingTo?.message
+          }
+        />
         <Button className="h-15" type="submit">
           Send
         </Button>

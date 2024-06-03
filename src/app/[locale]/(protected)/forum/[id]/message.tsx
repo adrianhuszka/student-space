@@ -27,14 +27,20 @@ import { toast } from "react-toastify";
 export default function Message({
   message,
   userId,
+  setReplyingTo,
+  replyingTo,
 }: {
   message: any;
   userId: string;
+  setReplyingTo: (message: any) => void;
+  replyingTo: any;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedMessage, setEditedMessage] = useState(message.message ?? "");
+
+  // console.log("message", message);
 
   const handleEditSave = async () => {
     const formData = new FormData();
@@ -54,6 +60,10 @@ export default function Message({
     await likeMessage({ forumMessageId: message.id, isLike: true });
   };
 
+  const handleToggleReply = () => {
+    setReplyingTo(message);
+  };
+
   useEffect(() => {
     if (isConfirmed) {
       deleteMessage({ id: message.id });
@@ -67,7 +77,8 @@ export default function Message({
           `flex flex-col gap-2 rounded-md m-5 bg-opacity-25 w-[75%] p-2`,
           message.senderId === userId
             ? "self-end bg-blue-800"
-            : "self-start bg-gray-600"
+            : "self-start bg-gray-600",
+          replyingTo?.id === message.id && "border-2 border-primary"
         )}
       >
         <div className="flex flex-row gap-2 w-full">
@@ -153,22 +164,29 @@ export default function Message({
           )}
         </div>
         <div className="flex flex-row gap-2">
-          <div>
-            <Tooltip content={"Like"} color={"success"} className="capitalize">
+          <div className="flex flex-row gap-2">
+            <Tooltip
+              content={"Like"}
+              color={"success"}
+              className="capitalize w-full"
+            >
               <Button
                 isIconOnly
                 variant="light"
                 color="success"
                 onClick={handleLike}
+                className="w-full"
               >
                 <Like1
                   size="24"
                   variant={
-                    message.likes.filter((item) => item.id === userId)
+                    message.likes
+                      .map((like: any) => like.userId)
+                      .includes(userId)
                       ? "Bold"
                       : "Outline"
                   }
-                />{" "}
+                />
                 ({message.likes.length})
               </Button>
             </Tooltip>
@@ -181,7 +199,7 @@ export default function Message({
                 isIconOnly
                 variant="light"
                 color="secondary"
-                onClick={() => console.log("Reply")}
+                onClick={handleToggleReply}
               >
                 <ArrowRight size="24" fill="#979797" />
               </Button>
