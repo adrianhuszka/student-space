@@ -83,8 +83,9 @@ export const ForumIndex = ({ id, userId }: { id: string; userId: string }) => {
         <div
           className={clsx(
             `flex flex-col overflow-y-auto`,
-            lastMessageDate !==
-              filteredData.content[filteredData.content.length - 1].createdAt
+            filteredData.content.length > 0 &&
+              lastMessageDate !==
+                filteredData.content[filteredData.content.length - 1].createdAt
               ? `max-h-[63.49vh]`
               : `max-h-[65.49vh]`
           )}
@@ -100,17 +101,19 @@ export const ForumIndex = ({ id, userId }: { id: string; userId: string }) => {
           ))}
           <div ref={lastMsg} className="min-h-[10px]"></div>
         </div>
-        <div
+        {/* <div
           className={clsx(
             "text-red-600 bg-slate-950 shadow-glass w-full rounded-b-lg cursor-pointer h-[2vh]",
-            lastMessageDate ===
-              filteredData.content[filteredData.content.length - 1].createdAt &&
+            filteredData.content.length > 0 &&
+              lastMessageDate ===
+                filteredData.content[filteredData.content.length - 1]
+                  .createdAt &&
               "hidden"
           )}
           onClick={scroll}
         >
           New message
-        </div>
+        </div> */}
       </div>
       <form className="flex flex-row gap-2" onSubmit={handleCreateMessage}>
         <Textarea
